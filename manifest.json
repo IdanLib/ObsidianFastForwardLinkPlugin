@@ -1,6 +1,6 @@
 {
 	"id": "synonyms-plugin",
-	"name": "obsidian-synonyms-plugin",
+	"name": "obsidian-redirect-plugin",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "This plugin allows you to redirect multiple references to a single note.",
