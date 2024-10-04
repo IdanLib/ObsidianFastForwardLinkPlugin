@@ -98,19 +98,32 @@ export default class RedirectPlugin extends Plugin {
 		} catch (error) {
 			console.log(error);
 			console.log(redirectingNote);
+			new Notice(
+				`${redirectingNote.name} is already in the _redirects folder.`,
+				3000
+			);
 		}
 
 		// MAKE SURE TO NOT REMOVE THE REDIRECTING NOTE WHEN CLICKED INSIDE THE _REDIRECTS FOLDER!
 		// console.log(redirectingNote.path);
 		// console.log(`_redirects/${redirectingNote.name}`);
 		if (redirectingNote.path === `_redirects/${redirectingNote.name}`) {
-			// console.log("yes we're in the reidrects folder");
+			console.log("yes we're in the reidrects folder");
 			return;
 		}
 		await this.app.vault.delete(redirectingNote);
 	}
 
-	onunload() {}
+	onunload() {
+		const redirectsFolder = this.app.vault.getFolderByPath("_redirects");
+
+		if (!redirectsFolder) {
+			return;
+		}
+		console.log("redirectsFolder: ", redirectsFolder);
+
+		this.app.vault.delete(redirectsFolder, true);
+	}
 
 	async loadSettings() {
 		this.settings = Object.assign(
