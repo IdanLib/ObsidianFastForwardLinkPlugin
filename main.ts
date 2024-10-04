@@ -1,134 +1,126 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import {
+	getLinkpath,
+	MarkdownView,
+	Plugin,
+	Notice,
+	TFolder,
+	TFile,
+} from "obsidian";
+// import vault from "components/Vault";
+import RedirectSettingsTab from "components/Settings";
 
-// Remember to rename these classes and interfaces!
-
-interface MyPluginSettings {
+interface RedirectSettings {
 	mySetting: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
+const DEFAULT_SETTINGS: RedirectSettings = {
+	mySetting: "EDIT",
+};
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class RedirectPlugin extends Plugin {
+	settings: RedirectSettings;
+	redirectsFolder: TFolder | null = null;
 
 	async onload() {
 		await this.loadSettings();
 
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
-		// Perform additional things with the ribbon
-		ribbonIconEl.addClass('my-plugin-ribbon-class');
-
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
-
-		// This adds a simple command that can be triggered anywhere
-		this.addCommand({
-			id: 'open-sample-modal-simple',
-			name: 'Open sample modal (simple)',
-			callback: () => {
-				new SampleModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'sample-editor-command',
-			name: 'Sample editor command',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection('Sample Editor Command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-sample-modal-complex',
-			name: 'Open sample modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
-				}
-			}
-		});
-
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		// this.addSettingTab(new RedirectSettingsTab(this.app, this));
 
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
+		this.app.workspace.onLayoutReady(async () => {
+			const folders = this.app.vault.getAllFolders();
+			// console.log(folders);
+			console.log(folders.find((folder) => folder.name === "_redirects"));
+			try {
+				this.redirectsFolder = await this.app.vault.createFolder(
+					"/_redirects"
+				);
+				console.log(this.redirectsFolder);
+			} catch (error) {
+				// Nofity user that folder already exists
+				new Notice("The `_redirects` folder already exists.", 3000);
+				console.log(error);
+			}
 		});
 
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+		// If first note is a redirecting note
+		this.app.workspace.onLayoutReady(() => {
+			this.redirect(false, false);
+		});
+
+		// Redirecting on active note change
+		this.app.workspace.on("active-leaf-change", (leaf) => {
+			this.redirect(false, false);
+		});
 	}
 
-	onunload() {
+	redirect(newTab: boolean, viewNewTab: boolean) {
+		const currentMdView =
+			this.app.workspace.getActiveViewOfType(MarkdownView);
 
+		const linkTextRegex = /::>\[\[(.*[\w\s]*)\]\]/i;
+		const targetNoteName = currentMdView
+			?.getViewData()
+			.match(linkTextRegex)
+			?.at(1);
+
+		if (!targetNoteName) {
+			return;
+		}
+
+		const targetNotePath = this.app.metadataCache.getFirstLinkpathDest(
+			getLinkpath(targetNoteName),
+			""
+		);
+
+		this.app.workspace.openLinkText(
+			targetNoteName || "",
+			targetNotePath?.path as string,
+			newTab,
+			{ active: viewNewTab }
+		);
+
+		this.moveRedirectNoteToRedirectsFolder();
 	}
+
+	async moveRedirectNoteToRedirectsFolder() {
+		console.log("in move function");
+
+		const redirectingNote = this.app.workspace.getActiveFile() as TFile;
+		console.log("redirectingNote: ", redirectingNote);
+		try {
+			const movedFile = await this.app.vault.copy(
+				redirectingNote,
+				`/_redirects/${redirectingNote.name}`
+			);
+			console.log(movedFile);
+			// Tell user via Notice that redirecting note already exists in _redirects. Move manually?
+		} catch (error) {
+			console.log(error);
+			console.log(redirectingNote);
+		}
+
+		// MAKE SURE TO NOT REMOVE THE REDIRECTING NOTE WHEN CLICKED INSIDE THE _REDIRECTS FOLDER!
+		// console.log(redirectingNote.path);
+		// console.log(`_redirects/${redirectingNote.name}`);
+		if (redirectingNote.path === `_redirects/${redirectingNote.name}`) {
+			// console.log("yes we're in the reidrects folder");
+			return;
+		}
+		await this.app.vault.delete(redirectingNote);
+	}
+
+	onunload() {}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			await this.loadData()
+		);
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const {containerEl} = this;
-
-		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
 	}
 }
