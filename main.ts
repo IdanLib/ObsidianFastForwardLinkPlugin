@@ -1,5 +1,12 @@
-import { getLinkpath, MarkdownView, Plugin } from "obsidian";
-
+import {
+	getLinkpath,
+	MarkdownView,
+	Plugin,
+	Notice,
+	TFolder,
+	TFile,
+} from "obsidian";
+// import vault from "components/Vault";
 import RedirectSettingsTab from "components/Settings";
 
 interface RedirectSettings {
@@ -12,43 +19,50 @@ const DEFAULT_SETTINGS: RedirectSettings = {
 
 export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
+	redirectsFolder: TFolder | null = null;
 
 	async onload() {
 		await this.loadSettings();
 
-		this.addSettingTab(new RedirectSettingsTab(this.app, this));
+		// This adds a settings tab so the user can configure various aspects of the plugin
+		// this.addSettingTab(new RedirectSettingsTab(this.app, this));
 
-		this.app.workspace.on("active-leaf-change", (leaf) => {
-			console.log("active-leaf-change: ", leaf);
+		this.app.workspace.onLayoutReady(async () => {
+			const folders = this.app.vault.getAllFolders();
+			// console.log(folders);
+			console.log(folders.find((folder) => folder.name === "_redirects"));
+			try {
+				this.redirectsFolder = await this.app.vault.createFolder(
+					"/_redirects"
+				);
+				console.log(this.redirectsFolder);
+			} catch (error) {
+				// Nofity user that folder already exists
+				new Notice("The `_redirects` folder already exists.", 3000);
+				console.log(error);
+			}
+		});
+
+		// If first note is a redirecting note
+		this.app.workspace.onLayoutReady(() => {
 			this.redirect(false, false);
 		});
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-
-		this.app.workspace.onLayoutReady(() => {
+		// Redirecting on active note change
+		this.app.workspace.on("active-leaf-change", (leaf) => {
 			this.redirect(false, false);
 		});
 	}
 
 	redirect(newTab: boolean, viewNewTab: boolean) {
-		// const currentFile = this.app.workspace.getActiveFile();
-		// console.log("currentFile: ", currentFile);
-
 		const currentMdView =
 			this.app.workspace.getActiveViewOfType(MarkdownView);
-
-		// console.log(
-		// 	"currentMdView.getViewData: ",
-		// 	currentMdView?.getViewData()
-		// );
 
 		const linkTextRegex = /::>\[\[(.*[\w\s]*)\]\]/i;
 		const targetNoteName = currentMdView
 			?.getViewData()
 			.match(linkTextRegex)
 			?.at(1);
-
-		// console.log("redirectTargetNote: ", targetNoteName);
 
 		if (!targetNoteName) {
 			return;
@@ -58,13 +72,42 @@ export default class RedirectPlugin extends Plugin {
 			getLinkpath(targetNoteName),
 			""
 		);
-		// console.log("targetNotePath: ", targetNotePath);
+
 		this.app.workspace.openLinkText(
 			targetNoteName || "",
 			targetNotePath?.path as string,
 			newTab,
 			{ active: viewNewTab }
 		);
+
+		this.moveRedirectNoteToRedirectsFolder();
+	}
+
+	async moveRedirectNoteToRedirectsFolder() {
+		console.log("in move function");
+
+		const redirectingNote = this.app.workspace.getActiveFile() as TFile;
+		console.log("redirectingNote: ", redirectingNote);
+		try {
+			const movedFile = await this.app.vault.copy(
+				redirectingNote,
+				`/_redirects/${redirectingNote.name}`
+			);
+			console.log(movedFile);
+			// Tell user via Notice that redirecting note already exists in _redirects. Move manually?
+		} catch (error) {
+			console.log(error);
+			console.log(redirectingNote);
+		}
+
+		// MAKE SURE TO NOT REMOVE THE REDIRECTING NOTE WHEN CLICKED INSIDE THE _REDIRECTS FOLDER!
+		// console.log(redirectingNote.path);
+		// console.log(`_redirects/${redirectingNote.name}`);
+		if (redirectingNote.path === `_redirects/${redirectingNote.name}`) {
+			// console.log("yes we're in the reidrects folder");
+			return;
+		}
+		await this.app.vault.delete(redirectingNote);
 	}
 
 	onunload() {}
