@@ -25,12 +25,12 @@ export default class RedirectPlugin extends Plugin {
 		await this.loadSettings();
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		// this.addSettingTab(new RedirectSettingsTab(this.app, this));
+		this.addSettingTab(new RedirectSettingsTab(this.app, this));
 
 		this.app.workspace.onLayoutReady(async () => {
-			const folders = this.app.vault.getAllFolders();
+			// const folders = this.app.vault.getAllFolders();
 			// console.log(folders);
-			console.log(folders.find((folder) => folder.name === "_redirects"));
+			// console.log(folders.find((folder) => folder.name === "_redirects"));
 			try {
 				this.redirectsFolder = await this.app.vault.createFolder(
 					"/_redirects"
@@ -114,16 +114,7 @@ export default class RedirectPlugin extends Plugin {
 		await this.app.vault.delete(redirectingNote);
 	}
 
-	onunload() {
-		const redirectsFolder = this.app.vault.getFolderByPath("_redirects");
-
-		if (!redirectsFolder) {
-			return;
-		}
-		console.log("redirectsFolder: ", redirectsFolder);
-
-		this.app.vault.delete(redirectsFolder, true);
-	}
+	onunload() {}
 
 	async loadSettings() {
 		this.settings = Object.assign(
