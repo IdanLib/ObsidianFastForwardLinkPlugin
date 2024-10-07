@@ -25,12 +25,12 @@ export default class RedirectPlugin extends Plugin {
 		await this.loadSettings();
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		// this.addSettingTab(new RedirectSettingsTab(this.app, this));
+		this.addSettingTab(new RedirectSettingsTab(this.app, this));
 
 		this.app.workspace.onLayoutReady(async () => {
-			const folders = this.app.vault.getAllFolders();
+			// const folders = this.app.vault.getAllFolders();
 			// console.log(folders);
-			console.log(folders.find((folder) => folder.name === "_redirects"));
+			// console.log(folders.find((folder) => folder.name === "_redirects"));
 			try {
 				this.redirectsFolder = await this.app.vault.createFolder(
 					"/_redirects"
@@ -98,13 +98,17 @@ export default class RedirectPlugin extends Plugin {
 		} catch (error) {
 			console.log(error);
 			console.log(redirectingNote);
+			new Notice(
+				`${redirectingNote.name} is already in the _redirects folder.`,
+				3000
+			);
 		}
 
 		// MAKE SURE TO NOT REMOVE THE REDIRECTING NOTE WHEN CLICKED INSIDE THE _REDIRECTS FOLDER!
 		// console.log(redirectingNote.path);
 		// console.log(`_redirects/${redirectingNote.name}`);
 		if (redirectingNote.path === `_redirects/${redirectingNote.name}`) {
-			// console.log("yes we're in the reidrects folder");
+			console.log("yes we're in the reidrects folder");
 			return;
 		}
 		await this.app.vault.delete(redirectingNote);
