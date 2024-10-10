@@ -9,7 +9,7 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 	constructor(app: App, plugin: RedirectPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
-		this.showSwitchToNewTabSetting = false; // When the target note opens in a new tab, whether to show the setting that controls automatically switching to the new tab.
+		this.showSwitchToNewTabSetting = this.plugin.settings.openInNewTab; // When the target note opens in a new tab, whether to show the setting that controls automatically switching to the new tab.
 	}
 
 	display(): void {
@@ -25,17 +25,13 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 					if (value) {
 						console.log("Yes, open target note in new tab.");
 						this.showSwitchToNewTabSetting = true;
-						console.log(
-							"this.showSwitchToNewTabSetting: ",
-							this.showSwitchToNewTabSetting
-						);
-
 						this.plugin.changeSettings(true, false);
 					} else {
 						console.log("No, open target note in same tab.");
 						this.showSwitchToNewTabSetting = false;
 						this.plugin.changeSettings(false, false);
 					}
+					this.plugin.saveSettings();
 					this.display();
 				});
 			});
@@ -49,14 +45,14 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 				.addToggle((toggle) => {
 					toggle.setValue(this.plugin.settings.switchToNewTab);
 					toggle.onChange((value) => {
-						console.log(value);
 						if (value) {
 							console.log("Yes, switch to the new tab.");
 							this.plugin.changeSettings(true, true);
 						} else {
 							console.log("No, don't switch to the new tab.");
-							this.plugin.changeSettings(true, true);
+							this.plugin.changeSettings(true, false);
 						}
+						this.plugin.saveSettings();
 					});
 				});
 
@@ -66,8 +62,6 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 				"Before uninstalling plugin, manually delete the `_redirects` folder to remove unnecessary files."
 			)
 			.addButton((button) => {
-				// console.log("button clicked");
-				// console.log("button: ", button);
 				button.setButtonText("Delete");
 				button.setTooltip("Delete the Redirects folder.");
 				button.onClick((evt) => {
@@ -76,7 +70,6 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 					if (!redirectsFolder) {
 						return;
 					}
-					console.log("redirectsFolder: ", redirectsFolder);
 					this.app.vault.delete(redirectsFolder, true);
 				});
 			});
