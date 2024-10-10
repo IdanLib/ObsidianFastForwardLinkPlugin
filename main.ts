@@ -27,8 +27,6 @@ const DEFAULT_SETTINGS: RedirectSettings = {
 export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
 	redirectsFolder: TFolder | null = null;
-	// openInNewTab = false;
-	// switchToNewTab = false;
 
 	changeSettings(newTab: boolean, switchToTab: boolean): void {
 		this.settings.openInNewTab = newTab;
@@ -52,8 +50,8 @@ export default class RedirectPlugin extends Plugin {
 				console.log(this.redirectsFolder);
 			} catch (error) {
 				// Nofity user that folder already exists
-				new Notice("The `_redirects` folder already exists.", 3000);
-				console.log(error);
+				new Notice("The `_redirects` folder exists.", 3000);
+				console.error(error);
 			}
 		});
 
@@ -119,10 +117,8 @@ export default class RedirectPlugin extends Plugin {
 		}
 
 		// MAKE SURE TO NOT REMOVE THE REDIRECTING NOTE WHEN CLICKED INSIDE THE _REDIRECTS FOLDER!
-		// console.log(redirectingNote.path);
-		// console.log(`_redirects/${redirectingNote.name}`);
 		if (redirectingNote.path === `_redirects/${redirectingNote.name}`) {
-			console.log("yes we're in the reidrects folder");
+			// console.log("yes we're in the redirects folder");
 			return;
 		}
 		await this.app.vault.delete(redirectingNote);
@@ -131,6 +127,7 @@ export default class RedirectPlugin extends Plugin {
 	onunload() {}
 
 	async loadSettings() {
+		console.log("loading data");
 		this.settings = Object.assign(
 			{},
 			DEFAULT_SETTINGS,
@@ -139,6 +136,7 @@ export default class RedirectPlugin extends Plugin {
 	}
 
 	async saveSettings() {
+		console.log("saving data");
 		await this.saveData(this.settings);
 	}
 }
