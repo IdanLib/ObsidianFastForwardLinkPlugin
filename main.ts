@@ -11,24 +11,29 @@ import RedirectSettingsTab from "components/Settings";
 interface RedirectSettings {
 	openInNewTab: boolean;
 	switchToNewTab: boolean;
-	changeSettings(newTab: boolean, switchToTab: boolean): void;
+	// changeSettings(newTab: boolean, switchToTab: boolean): void;
 }
 
 const DEFAULT_SETTINGS: RedirectSettings = {
 	openInNewTab: false,
 	switchToNewTab: false,
-	changeSettings: function (newTab, switchToTab) {
-		// this is probably a bad idea because it alters properties of the instance as it is being initialized.
-		this.openInNewTab = newTab;
-		this.switchToNewTab = switchToTab;
-	},
+	// changeSettings: function (newTab, switchToTab) {
+	// 	// this is probably a bad idea because it alters properties of the instance as it is being initialized.
+	// 	this.openInNewTab = newTab;
+	// 	this.switchToNewTab = switchToTab;
+	// },
 };
 
 export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
 	redirectsFolder: TFolder | null = null;
-	openInNewTab = false;
-	switchToNewTab = false;
+	// openInNewTab = false;
+	// switchToNewTab = false;
+
+	changeSettings(newTab: boolean, switchToTab: boolean): void {
+		this.settings.openInNewTab = newTab;
+		this.settings.switchToNewTab = switchToTab;
+	}
 
 	async onload() {
 		await this.loadSettings();
