@@ -6,20 +6,29 @@ import {
 	TFolder,
 	TFile,
 } from "obsidian";
-// import vault from "components/Vault";
 import RedirectSettingsTab from "components/Settings";
 
 interface RedirectSettings {
-	mySetting: string;
+	openInNewTab: boolean;
+	switchToNewTab: boolean;
+	changeSettings(newTab: boolean, switchToTab: boolean): void;
 }
 
 const DEFAULT_SETTINGS: RedirectSettings = {
-	mySetting: "EDIT",
+	openInNewTab: false,
+	switchToNewTab: false,
+	changeSettings: function (newTab, switchToTab) {
+		// this is probably a bad idea because it alters properties of the instance as it is being initialized.
+		this.openInNewTab = newTab;
+		this.switchToNewTab = switchToTab;
+	},
 };
 
 export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
 	redirectsFolder: TFolder | null = null;
+	openInNewTab = false;
+	switchToNewTab = false;
 
 	async onload() {
 		await this.loadSettings();
@@ -45,16 +54,16 @@ export default class RedirectPlugin extends Plugin {
 
 		// If first note is a redirecting note
 		this.app.workspace.onLayoutReady(() => {
-			this.redirect(false, false);
+			this.redirect();
 		});
 
 		// Redirecting on active note change
 		this.app.workspace.on("active-leaf-change", (leaf) => {
-			this.redirect(false, false);
+			this.redirect();
 		});
 	}
 
-	redirect(newTab: boolean, viewNewTab: boolean) {
+	redirect() {
 		const currentMdView =
 			this.app.workspace.getActiveViewOfType(MarkdownView);
 
@@ -74,10 +83,10 @@ export default class RedirectPlugin extends Plugin {
 		);
 
 		this.app.workspace.openLinkText(
-			targetNoteName || "",
+			targetNoteName,
 			targetNotePath?.path as string,
-			newTab,
-			{ active: viewNewTab }
+			this.settings.openInNewTab,
+			{ active: this.settings.switchToNewTab }
 		);
 
 		this.moveRedirectNoteToRedirectsFolder();
