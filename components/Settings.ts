@@ -9,7 +9,7 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 	constructor(app: App, plugin: RedirectPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
-		this.showSwitchToNewTabSetting = this.plugin.settings.openInNewTab; // When the target note opens in a new tab, whether to show the setting that controls automatically switching to the new tab.
+		this.showSwitchToNewTabSetting = this.plugin.settings.openInNewTab;
 	}
 
 	display(): void {
@@ -23,11 +23,9 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 				toggle.setValue(this.plugin.settings.openInNewTab);
 				toggle.onChange((value) => {
 					if (value) {
-						console.log("Yes, open target note in new tab.");
 						this.showSwitchToNewTabSetting = true;
 						this.plugin.changeSettings(true, false);
 					} else {
-						console.log("No, open target note in same tab.");
 						this.showSwitchToNewTabSetting = false;
 						this.plugin.changeSettings(false, false);
 					}
@@ -46,10 +44,8 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 					toggle.setValue(this.plugin.settings.switchToNewTab);
 					toggle.onChange((value) => {
 						if (value) {
-							console.log("Yes, switch to the new tab.");
 							this.plugin.changeSettings(true, true);
 						} else {
-							console.log("No, don't switch to the new tab.");
 							this.plugin.changeSettings(true, false);
 						}
 						this.plugin.saveSettings();
