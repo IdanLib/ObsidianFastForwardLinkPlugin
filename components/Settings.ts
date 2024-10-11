@@ -1,6 +1,6 @@
 import RedirectPlugin from "../main";
 
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 
 export default class RedirectSettingsTab extends PluginSettingTab {
 	plugin: RedirectPlugin;
@@ -64,6 +64,10 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 					const redirectsFolder =
 						this.app.vault.getFolderByPath("_redirects");
 					if (!redirectsFolder) {
+						new Notice(
+							"The _redirects folder cannot be found.",
+							2000
+						);
 						return;
 					}
 					this.app.vault.delete(redirectsFolder, true);
