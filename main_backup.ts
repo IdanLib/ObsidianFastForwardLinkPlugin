@@ -1,4 +1,12 @@
-import { getLinkpath, Plugin, Notice, TFolder, TFile } from "obsidian";
+import {
+	getLinkpath,
+	Plugin,
+	Notice,
+	TFolder,
+	TFile,
+	FileView,
+	TextFileView,
+} from "obsidian";
 import RedirectSettingsTab from "components/Settings";
 
 interface RedirectSettings {
@@ -49,23 +57,74 @@ export default class RedirectPlugin extends Plugin {
 		});
 	}
 
+	// redirect() {
+	// 	console.log("redirect called");
+
+	// 	const currentMdView =
+	// 		this.app.workspace.getActiveViewOfType(MarkdownView);
+
+	// 	console.log("in redirect function, currentMdView: ", currentMdView);
+
+	// 	const redirectingNote = currentMdView?.file as TFile | null;
+
+	// 	console.log("in redirect function, redirectingNote: ", redirectingNote);
+
+	// 	// setTimeout(() => {
+	// 	const redirectingNoteContent = currentMdView?.getViewData();
+	// 	console.log("redirectingNoteContent: ", redirectingNoteContent);
+	// 	// }, 100); // Adjust the delay as necessary (100ms or more)
+
+	// 	const linkTextRegex = /::>\[\[(.*[\w\s]*)\]\]/i;
+	// 	const targetNoteName = currentMdView
+	// 		?.getViewData()
+	// 		.match(linkTextRegex)
+	// 		?.at(1);
+	// 	console.log("targetNoteName: ", targetNoteName);
+
+	// 	if (!targetNoteName) {
+	// 		return;
+	// 	}
+
+	// 	const targetNoteFile = this.app.metadataCache.getFirstLinkpathDest(
+	// 		getLinkpath(targetNoteName),
+	// 		""
+	// 	);
+
+	// 	console.log("targetNoteFile: ", targetNoteFile);
+
+	// 	this.app.workspace.openLinkText(
+	// 		targetNoteName,
+	// 		targetNoteFile?.path as string,
+	// 		this.settings.openInNewTab,
+	// 		{ active: this.settings.switchToNewTab }
+	// 	);
+
+	// 	// this.moveRedirectNoteToRedirectsFolder(redirectingNote);
+	// }
+
 	async redirect() {
+		console.log("async redirect called");
 		const currentFile = this.app.workspace.getActiveFile();
 
 		const currentFileContent = await this.getCurrentFileContent(
 			currentFile
 		);
 
-		// if (!currentFileContent) {
-		// 	console.error(
-		// 		"Failed to load file content or no content available."
-		// 	);
-		// 	return; // Safely exit if file content is unavailable
-		// }
+		console.log(
+			"in async redirect function, currentFileContent: ",
+			currentFileContent
+		);
+
+		if (!currentFileContent) {
+			console.error(
+				"Failed to load file content or no content available."
+			);
+			return; // Safely exit if file content is unavailable
+		}
 
 		const targetNoteFile = this.getTargetFilePath(currentFileContent);
 
-		// console.log("targetNoteFile: ", targetNoteFile);
+		console.log("targetNoteFile: ", targetNoteFile);
 
 		// TODO if not target note exists, create it
 		if (!targetNoteFile) {
@@ -83,20 +142,11 @@ export default class RedirectPlugin extends Plugin {
 		this.moveRedirectNoteToRedirectsFolder(currentFile);
 	}
 
-	getCurrentFileContent(currentFile: TFile | null) {
-		if (!currentFile) {
-			console.error("No active file found!");
-			return null;
-		}
-
-		return this.app.vault.read(currentFile);
-	}
-
 	getTargetFilePath(currentFileContent: string | null) {
 		const linkTextRegex = /::>\[\[(.*[\w\s]*)\]\]/i;
 		const targetNoteName = currentFileContent?.match(linkTextRegex)?.at(1);
 
-		// console.log("targetNoteName: ", targetNoteName);
+		console.log("targetNoteName: ", targetNoteName);
 		if (!targetNoteName) {
 			return null;
 		}
@@ -107,15 +157,28 @@ export default class RedirectPlugin extends Plugin {
 		);
 	}
 
+	getCurrentFileContent(currentFile: TFile | null) {
+		// const currentFile = this.app.workspace.getActiveFile();
+
+		if (!currentFile) {
+			console.error("No active file found!");
+			return null;
+		}
+
+		return this.app.vault.read(currentFile);
+	}
+
 	async moveRedirectNoteToRedirectsFolder(redirectingNote: TFile | null) {
+		// const redirectingNote = this.app.workspace.getActiveFile() as TFile;
+
 		if (!redirectingNote) {
 			return;
 		}
 
-		// console.log(
-		// 	"in moveRedirectNoteToRedirectsFolder, redirectingNote: ",
-		// 	redirectingNote
-		// );
+		console.log(
+			"in moveRedirectNoteToRedirectsFolder, redirectingNote: ",
+			redirectingNote
+		);
 
 		await this.createRedirectsFolder();
 		try {
