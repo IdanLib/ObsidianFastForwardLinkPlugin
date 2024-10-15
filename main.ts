@@ -15,20 +15,179 @@ export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
 	redirectsFolder: TFolder | null = null;
 
-	changeSettings(newTab: boolean, switchToTab: boolean): void {
+	async changeSettings(newTab: boolean, switchToTab: boolean): Promise<void> {
 		this.settings.openInNewTab = newTab;
 		this.settings.switchToNewTab = switchToTab;
+		await this.saveSettings();
 	}
 
-	async createRedirectsFolder() {
+	private async createRedirectsFolder() {
+		const currentRedirectsFolder =
+			this.app.vault.getAbstractFileByPath("/_redirects");
+
+		if (!currentRedirectsFolder) {
+			try {
+				this.redirectsFolder = await this.app.vault.createFolder(
+					"/_redirects"
+				);
+			} catch (error) {
+				new Notice("Failed to create the _redirects folder.", 3000);
+				console.warn(error);
+			}
+		} else {
+			// this.redirectsFolder = currentRedirectsFolder as TFolder;
+			// new Notice("_redirects folder found.", 2000);
+		}
+	}
+
+	private async redirect() {
+		const currentFile = this.app.workspace.getActiveFile();
+		const currentFileContent = await this.getCurrentFileContent(
+			currentFile
+		);
+
+		if (!currentFileContent) {
+			console.error(
+				"Failed to load file content or no content available."
+			);
+			return;
+		}
+
+		const targetNoteFile = this.getTargetFile(currentFileContent);
+
+		// console.log("targetNoteFile: ", targetNoteFile);
+
+		if (!targetNoteFile) {
+			// console.info("No target note file found.");
+			return;
+		}
+
+		// console.log("this.settings: ", this.settings);
+
+		const updatedRedirectingNote =
+			await this.moveRedirectNoteToRedirectsFolder(currentFile);
+
+		await this.app.workspace.openLinkText(
+			targetNoteFile.name,
+			targetNoteFile.path,
+			this.settings.openInNewTab,
+			{ active: this.settings.switchToNewTab }
+		);
+	}
+
+	private async getCurrentFileContent(
+		currentFile: TFile | null
+	): Promise<string | null> {
+		if (!currentFile) {
+			console.error("No active file found!");
+			return null;
+		}
+
 		try {
-			this.redirectsFolder = await this.app.vault.createFolder(
-				"/_redirects"
+			return await this.app.vault.read(currentFile);
+		} catch (error) {
+			new Notice(`Cannot read ${currentFile}.`);
+			console.error(
+				console.error(`Failed to read ${currentFile} content: `, error)
+			);
+			return null;
+		}
+	}
+
+	private getTargetFile(currentFileContent: string): TFile | null {
+		const linkTextRegex = /::>\[\[(.*[\w\s]*)\]\]/i;
+		const targetNoteName = currentFileContent.match(linkTextRegex)?.at(1);
+
+		if (!targetNoteName) {
+			console.info("No redirect syntax found.");
+			return null;
+		}
+		const targetNoteFile = this.app.metadataCache.getFirstLinkpathDest(
+			getLinkpath(targetNoteName),
+			""
+		);
+
+		if (!targetNoteFile) {
+			console.error(
+				`No target note file found for target: ${targetNoteName}`
+			);
+			return null;
+		}
+
+		return targetNoteFile;
+	}
+
+	private async moveRedirectNoteToRedirectsFolder(
+		redirectingNote: TFile | null
+	): Promise<TFile | void> {
+		if (!redirectingNote) {
+			return;
+		}
+
+		if (!this.redirectsFolder) {
+			await this.createRedirectsFolder();
+		}
+
+		try {
+			await this.app.vault.copy(
+				redirectingNote,
+				`/_redirects/${redirectingNote.name}`
 			);
 		} catch (error) {
-			new Notice("The _redirects folder exists.", 3000);
-			console.info(error);
+			// if (error.message.includes("Folder already exists.")) {
+			// 	new Notice(
+			// 		`File "${redirectingNote.name}" already exists in the _redirects folder.`,
+			// 		2000
+			// 	);
+			// } else {
+			new Notice(
+				`Failed to move ${redirectingNote.name} to the _redirects folder.`,
+				2000
+			);
+			// }
+			console.warn(error);
+			// return;
 		}
+
+		console.log("redirectingNote.path: ", redirectingNote.path);
+
+		if (redirectingNote.path === `_redirects/${redirectingNote.name}`) {
+			new Notice(
+				`${redirectingNote.name} is in the _redirects folder.`,
+				2000
+			);
+			return;
+		}
+
+		console.log("redirectingNote.path: ", redirectingNote.path);
+		const updatedRedirectingNote = await this.deleteNote(redirectingNote);
+	}
+
+	private async deleteNote(orgRedirectingNote: TFile) {
+		let updatedRedirectingNote = null;
+
+		if (this.settings.openInNewTab) {
+			updatedRedirectingNote = Object.create(orgRedirectingNote);
+			console.log(
+				"orgRedirectingNote after copying: ",
+				orgRedirectingNote
+			);
+
+			updatedRedirectingNote.path = `_redirects/${orgRedirectingNote.path}`;
+
+			console.log("updatedRedirectingNote: ", updatedRedirectingNote);
+		}
+
+		try {
+			await this.app.vault.delete(orgRedirectingNote);
+		} catch (error) {
+			new Notice(
+				"Failed to delete directing note from original location. Please delete manually."
+			);
+			console.error(error);
+		}
+
+		return updatedRedirectingNote; // return to caller to open re-open directing tab in tab
 	}
 
 	async onload() {
@@ -38,9 +197,6 @@ export default class RedirectPlugin extends Plugin {
 
 		this.app.workspace.onLayoutReady(async () => {
 			await this.createRedirectsFolder();
-		});
-
-		this.app.workspace.onLayoutReady(() => {
 			this.redirect();
 		});
 
@@ -49,110 +205,27 @@ export default class RedirectPlugin extends Plugin {
 		});
 	}
 
-	async redirect() {
-		const currentFile = this.app.workspace.getActiveFile();
-
-		const currentFileContent = await this.getCurrentFileContent(
-			currentFile
-		);
-
-		// if (!currentFileContent) {
-		// 	console.error(
-		// 		"Failed to load file content or no content available."
-		// 	);
-		// 	return; // Safely exit if file content is unavailable
-		// }
-
-		const targetNoteFile = this.getTargetFilePath(currentFileContent);
-
-		// console.log("targetNoteFile: ", targetNoteFile);
-
-		// TODO if not target note exists, create it
-		if (!targetNoteFile) {
-			console.error("No target note file found.");
-			return; // Safely exit if target file is not found
-		}
-
-		await this.app.workspace.openLinkText(
-			targetNoteFile.basename,
-			targetNoteFile.path,
-			this.settings.openInNewTab,
-			{ active: this.settings.switchToNewTab }
-		);
-
-		this.moveRedirectNoteToRedirectsFolder(currentFile);
+	onunload() {
+		this.app.workspace.off("file-open", this.redirect);
 	}
-
-	getCurrentFileContent(currentFile: TFile | null) {
-		if (!currentFile) {
-			console.error("No active file found!");
-			return null;
-		}
-
-		return this.app.vault.read(currentFile);
-	}
-
-	getTargetFilePath(currentFileContent: string | null) {
-		const linkTextRegex = /::>\[\[(.*[\w\s]*)\]\]/i;
-		const targetNoteName = currentFileContent?.match(linkTextRegex)?.at(1);
-
-		// console.log("targetNoteName: ", targetNoteName);
-		if (!targetNoteName) {
-			return null;
-		}
-
-		return this.app.metadataCache.getFirstLinkpathDest(
-			getLinkpath(targetNoteName),
-			""
-		);
-	}
-
-	async moveRedirectNoteToRedirectsFolder(redirectingNote: TFile | null) {
-		if (!redirectingNote) {
-			return;
-		}
-
-		// console.log(
-		// 	"in moveRedirectNoteToRedirectsFolder, redirectingNote: ",
-		// 	redirectingNote
-		// );
-
-		await this.createRedirectsFolder();
-		try {
-			await this.app.vault.copy(
-				redirectingNote,
-				`/_redirects/${redirectingNote.name}`
-			);
-		} catch (error) {
-			console.error(error);
-			new Notice(
-				`${redirectingNote.name} cannot be moved to the _redirects folder.`,
-				2000
-			);
-			return;
-		}
-
-		if (redirectingNote.path === `_redirects/${redirectingNote.name}`) {
-			new Notice(
-				`${redirectingNote.name} is in the _redirects folder.`,
-				2000
-			);
-			return;
-		}
-		await this.app.vault.delete(redirectingNote);
-	}
-
-	onunload() {}
 
 	async loadSettings() {
-		this.settings = Object.assign(
-			{},
-			DEFAULT_SETTINGS,
-			await this.loadData()
-		);
+		try {
+			this.settings = Object.assign(
+				{},
+				DEFAULT_SETTINGS,
+				await this.loadData()
+			);
+		} catch (error) {
+			console.error("Failed to load settings: ", error);
+		}
 	}
 
 	async saveSettings() {
-		await this.saveData(this.settings);
+		try {
+			await this.saveData(this.settings);
+		} catch (error) {
+			console.error("Failed to save settings: ", error);
+		}
 	}
 }

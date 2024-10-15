@@ -22,6 +22,13 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.openInNewTab);
 				toggle.onChange((value) => {
+					// this.showSwitchToNewTabSetting = value;
+					// this.plugin.changeSettings(
+					// 	this.showSwitchToNewTabSetting,
+					// 	false
+					// );
+					// console.log("this.plugin.settings: ", this.plugin.settings);
+
 					if (value) {
 						this.showSwitchToNewTabSetting = true;
 						this.plugin.changeSettings(true, false);
@@ -29,7 +36,7 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 						this.showSwitchToNewTabSetting = false;
 						this.plugin.changeSettings(false, false);
 					}
-					this.plugin.saveSettings();
+					// this.plugin.saveSettings();
 					this.display();
 				});
 			});
@@ -43,12 +50,21 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 				.addToggle((toggle) => {
 					toggle.setValue(this.plugin.settings.switchToNewTab);
 					toggle.onChange((value) => {
+						// this.plugin.changeSettings(
+						// 	this.plugin.settings.openInNewTab,
+						// 	value
+						// );
+						// console.log(
+						// 	"this.plugin.settings: ",
+						// 	this.plugin.settings
+						// );
+
 						if (value) {
 							this.plugin.changeSettings(true, true);
 						} else {
 							this.plugin.changeSettings(true, false);
 						}
-						this.plugin.saveSettings();
+						// this.plugin.saveSettings();
 					});
 				});
 
@@ -70,7 +86,20 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 						);
 						return;
 					}
-					this.app.vault.delete(redirectsFolder, true);
+
+					try {
+						this.app.vault.delete(redirectsFolder, true);
+						new Notice(
+							"_redirects folder deleted successfully.",
+							2000
+						);
+					} catch (error) {
+						new Notice(
+							"Could not delete the _redirects folder.",
+							2000
+						);
+						console.error(error);
+					}
 				});
 			});
 	}
