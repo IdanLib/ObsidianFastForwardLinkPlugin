@@ -1,4 +1,12 @@
-import { getLinkpath, Plugin, Notice, TFolder, TFile } from "obsidian";
+import {
+	getLinkpath,
+	Plugin,
+	Notice,
+	TFolder,
+	TFile,
+	WorkspaceLeaf,
+	OpenViewState,
+} from "obsidian";
 import RedirectSettingsTab from "components/Settings";
 
 interface RedirectSettings {
@@ -10,6 +18,12 @@ const DEFAULT_SETTINGS: RedirectSettings = {
 	openInNewTab: false,
 	switchToNewTab: false,
 };
+
+// class Leaf extends WorkspaceLeaf {
+// 	async openFile(file: TFile, openState?: OpenViewState): Promise<void> {
+// 		return;
+// 	}
+// }
 
 export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
@@ -67,12 +81,24 @@ export default class RedirectPlugin extends Plugin {
 		const updatedRedirectingNote =
 			await this.moveRedirectNoteToRedirectsFolder(currentFile);
 
-		await this.app.workspace.openLinkText(
-			targetNoteFile.name,
-			targetNoteFile.path,
-			this.settings.openInNewTab,
-			{ active: this.settings.switchToNewTab }
+		console.log(
+			"updatedRedirectingNote returned from the move function: ",
+			updatedRedirectingNote
 		);
+		if (updatedRedirectingNote) {
+			// MOVE TO MOVE FILE FUNCTION, THAT'S LOGICALLY PART OF THE MOVING MECHANISM
+			await this.app.workspace.openLinkText(
+				updatedRedirectingNote.name,
+				updatedRedirectingNote.path
+			);
+		}
+
+		// await this.app.workspace.openLinkText(
+		// 	targetNoteFile.name,
+		// 	targetNoteFile.path,
+		// 	this.settings.openInNewTab,
+		// 	{ active: this.settings.switchToNewTab }
+		// );
 	}
 
 	private async getCurrentFileContent(
@@ -161,10 +187,12 @@ export default class RedirectPlugin extends Plugin {
 
 		console.log("redirectingNote.path: ", redirectingNote.path);
 		const updatedRedirectingNote = await this.deleteNote(redirectingNote);
+		console.log("updatedRedirectingNote: ", updatedRedirectingNote);
+		return updatedRedirectingNote;
 	}
 
 	private async deleteNote(orgRedirectingNote: TFile) {
-		let updatedRedirectingNote = null;
+		let updatedRedirectingNote = orgRedirectingNote;
 
 		if (this.settings.openInNewTab) {
 			updatedRedirectingNote = Object.create(orgRedirectingNote);
@@ -186,6 +214,7 @@ export default class RedirectPlugin extends Plugin {
 			);
 			console.error(error);
 		}
+		console.log("deleted the original redirecting note");
 
 		return updatedRedirectingNote; // return to caller to open re-open directing tab in tab
 	}
