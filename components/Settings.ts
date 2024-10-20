@@ -22,13 +22,6 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.openInNewTab);
 				toggle.onChange((value) => {
-					// this.showSwitchToNewTabSetting = value;
-					// this.plugin.changeSettings(
-					// 	this.showSwitchToNewTabSetting,
-					// 	false
-					// );
-					// console.log("this.plugin.settings: ", this.plugin.settings);
-
 					if (value) {
 						this.showSwitchToNewTabSetting = true;
 						this.plugin.changeSettings(true, false);
@@ -36,7 +29,6 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 						this.showSwitchToNewTabSetting = false;
 						this.plugin.changeSettings(false, false);
 					}
-					// this.plugin.saveSettings();
 					this.display();
 				});
 			});
@@ -50,21 +42,11 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 				.addToggle((toggle) => {
 					toggle.setValue(this.plugin.settings.switchToNewTab);
 					toggle.onChange((value) => {
-						// this.plugin.changeSettings(
-						// 	this.plugin.settings.openInNewTab,
-						// 	value
-						// );
-						// console.log(
-						// 	"this.plugin.settings: ",
-						// 	this.plugin.settings
-						// );
-
 						if (value) {
 							this.plugin.changeSettings(true, true);
 						} else {
 							this.plugin.changeSettings(true, false);
 						}
-						// this.plugin.saveSettings();
 					});
 				});
 
