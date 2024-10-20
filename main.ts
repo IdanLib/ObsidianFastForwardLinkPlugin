@@ -1,27 +1,19 @@
 import { getLinkpath, Plugin, Notice, TFolder, TFile } from "obsidian";
 import RedirectSettingsTab from "components/Settings";
-import { log } from "console";
 
 interface RedirectSettings {
 	openInNewTab: boolean;
 	switchToNewTab: boolean;
-	redirectsFolder: TFolder | null;
 }
 
 const DEFAULT_SETTINGS: RedirectSettings = {
 	openInNewTab: false,
 	switchToNewTab: false,
-	redirectsFolder: null,
 };
-
-// class Leaf extends WorkspaceLeaf {
-// 	async openFile(file: TFile, openState?: OpenViewState): Promise<void> {
-// 		return;
-// 	}
-// }
 
 export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
+	redirectsFolder: TFolder | null;
 
 	async changeSettings(newTab: boolean, switchToTab: boolean): Promise<void> {
 		this.settings.openInNewTab = newTab;
@@ -35,21 +27,17 @@ export default class RedirectPlugin extends Plugin {
 
 		if (!currentRedirectsFolder) {
 			try {
-				this.settings.redirectsFolder =
-					await this.app.vault.createFolder("/_redirects");
+				this.redirectsFolder = await this.app.vault.createFolder(
+					"/_redirects"
+				);
 			} catch (error) {
-				new Notice("Failed to create the _redirects folder.", 3000);
 				console.warn(error);
 			}
 		} else {
 			new Notice("_redirects folder found.", 2000);
 		}
 
-		this.settings.redirectsFolder = currentRedirectsFolder as TFolder;
-		// console.log(
-		// 	"line 55, this.settings.redirectsFolder: ",
-		// 	this.settings.redirectsFolder
-		// );
+		this.redirectsFolder = currentRedirectsFolder as TFolder;
 	}
 
 	private async redirect() {
@@ -67,18 +55,7 @@ export default class RedirectPlugin extends Plugin {
 			return;
 		}
 
-		// const updatedRedirectingNote =
-		await this.moveRedirectNoteToRedirectsFolder(currentFile);
-
-		// console.log("currentFile: ", currentFile);
-		// console.log(
-		// 	"updatedRedirectingNote in redirect function: ",
-		// 	updatedRedirectingNote
-		// );
-
-		// if (this.settings.openInNewTab && !updatedRedirectingNote) {
-		// 	return;
-		// }
+		await this.moveRedirectNote(currentFile);
 
 		await this.app.workspace.openLinkText(
 			targetNoteFile.name,
@@ -86,18 +63,11 @@ export default class RedirectPlugin extends Plugin {
 			this.settings.openInNewTab,
 			{ active: this.settings.switchToNewTab }
 		);
-
-		// }
 	}
 
 	private async getCurrentFileContent(
 		currentFile: TFile
 	): Promise<string | null> {
-		// if (!currentFile) {
-		// 	console.error("No active file found!");
-		// 	return null;
-		// }
-
 		try {
 			return await this.app.vault.read(currentFile);
 		} catch (error) {
@@ -132,14 +102,14 @@ export default class RedirectPlugin extends Plugin {
 		return targetNoteFile;
 	}
 
-	private async moveRedirectNoteToRedirectsFolder(
+	private async moveRedirectNote(
 		redirectingNote: TFile | null
 	): Promise<TFile | void> {
 		if (!redirectingNote) {
 			return;
 		}
 
-		if (!this.settings.redirectsFolder) {
+		if (!this.redirectsFolder) {
 			await this.createRedirectsFolder();
 
 			try {
@@ -148,19 +118,7 @@ export default class RedirectPlugin extends Plugin {
 					`/_redirects/${redirectingNote.name}`
 				);
 			} catch (error) {
-				// if (error.message.includes("Folder already exists.")) {
-				// 	new Notice(
-				// 		`File "${redirectingNote.name}" already exists in the _redirects folder.`,
-				// 		2000
-				// 	);
-				// } else {
-				new Notice(
-					`Failed to copy ${redirectingNote.name} to the _redirects folder.`,
-					2000
-				);
-				// }
 				console.warn(error);
-				// return;
 			}
 
 			const redirectingNoteInFolder = await this.deleteNote(
@@ -202,7 +160,8 @@ export default class RedirectPlugin extends Plugin {
 			await this.app.vault.delete(orgRedirectingNote);
 		} catch (error) {
 			new Notice(
-				"Failed to delete directing note from original location. Please delete manually."
+				"Failed to delete directing note from original location. Please delete manually.",
+				4500
 			);
 			console.error(error);
 		}
