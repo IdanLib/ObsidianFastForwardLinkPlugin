@@ -129,10 +129,15 @@ export default class RedirectPlugin extends Plugin {
 				return;
 			}
 
+			// Turn off event handler to avoid opening the target note twice
+			this.app.workspace.off("file-open", this.redirectRef);
+
 			await this.app.workspace.openLinkText(
 				redirectingNoteInFolder.name,
 				redirectingNoteInFolder.path
 			);
+
+			this.app.workspace.on("file-open", this.redirectRef);
 
 			return redirectingNoteInFolder;
 		}
@@ -169,6 +174,10 @@ export default class RedirectPlugin extends Plugin {
 		return updatedRedirectingNote;
 	}
 
+	redirectRef = async () => {
+		await this.redirect();
+	};
+
 	async onload() {
 		await this.loadSettings();
 
@@ -179,13 +188,11 @@ export default class RedirectPlugin extends Plugin {
 			await this.redirect();
 		});
 
-		this.app.workspace.on("file-open", async (leaf) => {
-			await this.redirect();
-		});
+		this.app.workspace.on("file-open", this.redirectRef);
 	}
 
 	onunload() {
-		this.app.workspace.off("file-open", this.redirect);
+		this.app.workspace.off("file-open", this.redirectRef);
 	}
 
 	async loadSettings() {
