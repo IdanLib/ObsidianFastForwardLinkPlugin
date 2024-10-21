@@ -14,6 +14,9 @@ const DEFAULT_SETTINGS: RedirectSettings = {
 export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
 	redirectsFolder: TFolder | null;
+	redirectRef = async () => {
+		await this.redirect();
+	};
 
 	async changeSettings(newTab: boolean, switchToTab: boolean): Promise<void> {
 		this.settings.openInNewTab = newTab;
@@ -93,8 +96,12 @@ export default class RedirectPlugin extends Plugin {
 		);
 
 		if (!targetNoteFile) {
+			new Notice(
+				"Target note not found. Create one and try again.",
+				3500
+			);
 			console.error(
-				`No target note file found for target: ${targetNoteName}`
+				`No target note file found for target: ${targetNoteName}. You can create one manually and try again.`
 			);
 			return null;
 		}
@@ -174,10 +181,6 @@ export default class RedirectPlugin extends Plugin {
 		return updatedRedirectingNote;
 	}
 
-	redirectRef = async () => {
-		await this.redirect();
-	};
-
 	async onload() {
 		await this.loadSettings();
 
@@ -189,6 +192,16 @@ export default class RedirectPlugin extends Plugin {
 		});
 
 		this.app.workspace.on("file-open", this.redirectRef);
+
+		this.addCommand({
+			id: "paste-redirect-syntax",
+			name: "Paste Redirect Syntax onto Selection",
+			hotkeys: [{ key: "r", modifiers: ["Ctrl", "Alt"] }],
+			editorCallback: (editor, view) => {
+				const selection = editor.getSelection();
+				editor.replaceSelection(`::>[[${selection}]]`);
+			},
+		});
 	}
 
 	onunload() {
