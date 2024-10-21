@@ -14,6 +14,9 @@ const DEFAULT_SETTINGS: RedirectSettings = {
 export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
 	redirectsFolder: TFolder | null;
+	redirectRef = async () => {
+		await this.redirect();
+	};
 
 	async changeSettings(newTab: boolean, switchToTab: boolean): Promise<void> {
 		this.settings.openInNewTab = newTab;
@@ -93,8 +96,12 @@ export default class RedirectPlugin extends Plugin {
 		);
 
 		if (!targetNoteFile) {
+			new Notice(
+				"Target note not found. Create one and try again.",
+				3500
+			);
 			console.error(
-				`No target note file found for target: ${targetNoteName}`
+				`No target note file found for target: ${targetNoteName}. You can create one manually and try again.`
 			);
 			return null;
 		}
@@ -129,10 +136,15 @@ export default class RedirectPlugin extends Plugin {
 				return;
 			}
 
+			// Turn off event handler to avoid opening the target note twice
+			this.app.workspace.off("file-open", this.redirectRef);
+
 			await this.app.workspace.openLinkText(
 				redirectingNoteInFolder.name,
 				redirectingNoteInFolder.path
 			);
+
+			this.app.workspace.on("file-open", this.redirectRef);
 
 			return redirectingNoteInFolder;
 		}
@@ -179,13 +191,21 @@ export default class RedirectPlugin extends Plugin {
 			await this.redirect();
 		});
 
-		this.app.workspace.on("file-open", async (leaf) => {
-			await this.redirect();
+		this.app.workspace.on("file-open", this.redirectRef);
+
+		this.addCommand({
+			id: "paste-redirect-syntax",
+			name: "Paste Redirect Syntax onto Selection",
+			hotkeys: [{ key: "r", modifiers: ["Ctrl", "Alt"] }],
+			editorCallback: (editor, view) => {
+				const selection = editor.getSelection();
+				editor.replaceSelection(`::>[[${selection}]]`);
+			},
 		});
 	}
 
 	onunload() {
-		this.app.workspace.off("file-open", this.redirect);
+		this.app.workspace.off("file-open", this.redirectRef);
 	}
 
 	async loadSettings() {
