@@ -3,7 +3,7 @@
 	"name": "Synonyms",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Create synonyms that direct to the same note.",
+	"description": "",
 	"author": "Idan Liberman",
 	"isDesktopOnly": false
 }

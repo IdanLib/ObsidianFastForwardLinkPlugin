@@ -1,5 +1,4 @@
 import RedirectPlugin from "../main";
-
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 
 export default class RedirectSettingsTab extends PluginSettingTab {
@@ -53,11 +52,12 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Delete Redirects Folder")
 			.setDesc(
-				"Before uninstalling plugin, manually delete the `_redirects` folder to remove unnecessary files."
+				"Before uninstalling the plugin, manually delete the `_redirects` folder to remove unnecessary files."
 			)
 			.addButton((button) => {
 				button.setButtonText("Delete");
 				button.setTooltip("Delete the Redirects folder.");
+				button.setWarning();
 				button.onClick((evt) => {
 					const redirectsFolder =
 						this.app.vault.getFolderByPath("_redirects");
