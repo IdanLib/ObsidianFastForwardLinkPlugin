@@ -52,11 +52,11 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Delete Redirects Folder")
 			.setDesc(
-				"Before uninstalling the plugin, manually delete the `_redirects` folder to remove unnecessary files."
+				"Before uninstalling the plugin, manually delete the `_redirects` folder to remove unnecessary files. This cannot be undone."
 			)
 			.addButton((button) => {
 				button.setButtonText("Delete");
-				button.setTooltip("Delete the Redirects folder.");
+				button.setTooltip("Delete the Redirects folder.", { delay: 0 });
 				button.setWarning();
 				button.onClick((evt) => {
 					const redirectsFolder =

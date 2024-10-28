@@ -200,6 +200,13 @@ export default class RedirectPlugin extends Plugin {
 			editorCallback: (editor, view) => {
 				const selection = editor.getSelection();
 				editor.replaceSelection(`::>[[${selection}]]`);
+				const { ch, line } = editor.getCursor();
+				if (!selection) {
+					editor.setCursor({
+						ch: ch - 2,
+						line: line,
+					});
+				}
 			},
 		});
 	}
