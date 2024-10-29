@@ -1,9 +1,10 @@
 {
-	"id": "synonyms",
-	"name": "Synonyms",
+	"id": "fast-forward-link",
+	"name": "FastForwardLink",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "",
+	"description": "Forward multiple links to a single note with ease. Create custom link shorthands (like `ps` > `photoshop`) to type faster, navigate easily, and keep your vault organized.",
 	"author": "Idan Liberman",
-	"isDesktopOnly": false
+	"isDesktopOnly": false,
+	"fundingUrl": "https://buymeacoffee.com/idanlib"
 }

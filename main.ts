@@ -26,18 +26,18 @@ export default class RedirectPlugin extends Plugin {
 
 	private async createRedirectsFolder() {
 		const currentRedirectsFolder =
-			this.app.vault.getAbstractFileByPath("/_redirects");
+			this.app.vault.getAbstractFileByPath("/_forwards");
 
 		if (!currentRedirectsFolder) {
 			try {
 				this.redirectsFolder = await this.app.vault.createFolder(
-					"/_redirects"
+					"/_forwards"
 				);
 			} catch (error) {
 				console.warn(error);
 			}
 		} else {
-			new Notice("_redirects folder found.", 2000);
+			new Notice("_forwards folder found.", 2000);
 		}
 
 		this.redirectsFolder = currentRedirectsFolder as TFolder;
@@ -122,7 +122,7 @@ export default class RedirectPlugin extends Plugin {
 			try {
 				await this.app.vault.copy(
 					redirectingNote,
-					`/_redirects/${redirectingNote.name}`
+					`/_forwards/${redirectingNote.name}`
 				);
 			} catch (error) {
 				console.warn(error);
@@ -154,10 +154,10 @@ export default class RedirectPlugin extends Plugin {
 		let updatedRedirectingNote = orgRedirectingNote;
 
 		if (
-			orgRedirectingNote.path === `_redirects/${orgRedirectingNote.name}`
+			orgRedirectingNote.path === `_forwards/${orgRedirectingNote.name}`
 		) {
 			new Notice(
-				`${orgRedirectingNote.name} is in the _redirects folder.`,
+				`${orgRedirectingNote.name} is in the _forwards folder.`,
 				2000
 			);
 			return;
@@ -165,7 +165,7 @@ export default class RedirectPlugin extends Plugin {
 
 		if (this.settings.openInNewTab) {
 			updatedRedirectingNote = Object.create(orgRedirectingNote);
-			updatedRedirectingNote.path = `_redirects/${orgRedirectingNote.path}`;
+			updatedRedirectingNote.path = `_forwards/${orgRedirectingNote.path}`;
 		}
 
 		try {
