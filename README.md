@@ -1,96 +1,75 @@
-<!-- # Obsidian Sample Plugin
+# FastForwardLink
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+Fast-forward from one or more notes to a single target note with ease. Create custom link abbreviations (like `ps` > `photoshop`) to type faster, create conceptual connections between terms, navigate between notes quicker, and keep your vault organized.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Introduction
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+FastForwardLink lets you redirect multiple links to a single note, creating a seamless and organized navigation experience. You can Obsidian links that are effectively synonymous.
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+For example, including `[[ps]]` in a note would create or navigate to note called `ps`. With FastForwardLink, it would automatically forward you to the to real target note, titled `photoshop` (or anything else you've defined as the target note).
 
-## First time developing plugins?
+Common cases include:
 
-Quick starting guide for new plugin devs:
+-   `ps` > `photoshop`
+-   `js` > `javascript`
+-   `tay tay` > `taylor swift`
+-   `46` > `joe biden`
+-   `e=mc2` > `Einstein's special theory of relativity`
+-   `favorite film` > `bill and ted's bogus journey`
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+FastForwardLink helps you write faster, keep your notes interconnected, and minimize navigation friction in your vault.
 
-## Releasing new releases
+### FastForwardLink Demo
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+Screenshot or GIF showcasing FastForwardLink in action
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+## Features
 
-## Adding your plugin to the community plugin list
+-   Fast Forward Links: Redirect from one note to another automatically, ensuring smooth navigation across related topics or abbreviations.
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+-   Custom Shorthands and Synonyms: Create shorthand links like js that automatically redirect to your main javascript note. Organize synonyms or alternate spellings for easier access.
 
-## How to use
+-   Quick Keyboard Shortcut: Use `Ctrl + Alt + R` to quickly set a target note, letting you add fast-forwards on the go without breaking your flow.
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+-   Simplify Your Vault: Keep your vault tidy by centralizing related notes and unifying similar concepts. Perfect for those who want organized, efficient navigation.
 
-## Manually installing the plugin
+-   Keep forwards organized: Forwarding notes are automatically moved to a designated folder, for easy review, management, and removal.
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+-   Choose your preferred forwarding type. You can:
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code.
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
+    -   Open the target note in the same tab.
+    -   Open the target note in a new tab and remain on the forwarding tab.
+    -   Open the target note in a new tab and automatically switch to it.
 
-## Funding URL
+-   Remove forwarding notes easily: Delete all redirecting notes with a single click.
 
-You can include funding URLs where people who use your plugin can financially support it.
+## Installation and Use
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+_How do I install FastForwardLink?_
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
+1. Download the FastForwardLink plugin file and place it in your vault's plugins folder at `{VaultFolder}/.obsidian/plugins/{your-plugin-name}/`
+2. Open Obsidian and click **Settings** > **Community Plugins**.
+3. Enable **FastForwardLink**.
 
-If you have multiple URLs, you can also do:
+_How do I set up a link redirect?_
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+1. Create or open the note you’d like to forward you to a target note. This is the forwaring note. For example, when discussing photo editing, the term `ps` is commonly used as shorthand for `photoshop`.
+2. Specify the target note's title, wrapped in the forwarding syntax: `::>[[target-note]]`.
 
-## API Documentation
+_Typing sucks. Is there a keyboard shortcut?_
 
-See https://github.com/obsidianmd/obsidian-api -->
+Yes! Press You can also press `Ctrl + Alt + R` to wrap the selected text in the forwarding syntax.
+
+That's it! Whenever the forwarding note is opened, it will automatically forward you to the target note.
+
+### Reporting Bugs and Contacting
+
+Found a bug? Well, we can't have those!
+
+Please open an issue in the [plugin's GitHub repository](ADDLINK), or [contact the developer](idanlib@gmail.com) directly.
+
+## Support this Plugin
+
+If you like this plugin, consider tipping me at [BuyMeACoffee.com](https://buymeacoffee.com/idanlib).
+
+<a href="https://www.buymeacoffee.com/idanlib" target="_blank"><img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaG9iNnQwYzI4ajB5enBtMjd4czBzcDlveWJsdm1zYWdna21xZDNvMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/7kZE0z52Sd9zSESzDA/giphy.gif" alt="Buy Me A Coffee" height="300" width="300"></a>

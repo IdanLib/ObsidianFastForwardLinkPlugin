@@ -21,13 +21,8 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.openInNewTab);
 				toggle.onChange((value) => {
-					if (value) {
-						this.showSwitchToNewTabSetting = true;
-						this.plugin.changeSettings(true, false);
-					} else {
-						this.showSwitchToNewTabSetting = false;
-						this.plugin.changeSettings(false, false);
-					}
+					this.showSwitchToNewTabSetting = value;
+					this.plugin.changeSettings(value, false);
 					this.display();
 				});
 			});
@@ -41,43 +36,39 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 				.addToggle((toggle) => {
 					toggle.setValue(this.plugin.settings.switchToNewTab);
 					toggle.onChange((value) => {
-						if (value) {
-							this.plugin.changeSettings(true, true);
-						} else {
-							this.plugin.changeSettings(true, false);
-						}
+						this.plugin.changeSettings(true, value);
 					});
 				});
 
 		new Setting(containerEl)
-			.setName("Delete Redirects Folder")
+			.setName("Delete the _forwards Folder")
 			.setDesc(
-				"Before uninstalling the plugin, manually delete the `_redirects` folder to remove unnecessary files. This cannot be undone."
+				"Before uninstalling the plugin, manually delete the `_forwards` folder to remove unnecessary files. This cannot be undone."
 			)
 			.addButton((button) => {
 				button.setButtonText("Delete");
-				button.setTooltip("Delete the Redirects folder.", { delay: 0 });
+				button.setTooltip("Delete the _forwards folder.");
 				button.setWarning();
 				button.onClick((evt) => {
-					const redirectsFolder =
-						this.app.vault.getFolderByPath("_redirects");
-					if (!redirectsFolder) {
+					const forwardsFolder =
+						this.app.vault.getFolderByPath("_forwards");
+					if (!forwardsFolder) {
 						new Notice(
-							"The _redirects folder cannot be found.",
+							"The _forwards folder cannot be found.",
 							2000
 						);
 						return;
 					}
 
 					try {
-						this.app.vault.delete(redirectsFolder, true);
+						this.app.vault.delete(forwardsFolder, true);
 						new Notice(
-							"_redirects folder deleted successfully.",
+							"_forwards folder deleted successfully.",
 							2000
 						);
 					} catch (error) {
 						new Notice(
-							"Could not delete the _redirects folder.",
+							"Could not delete the _forwards folder.",
 							2000
 						);
 						console.error(error);

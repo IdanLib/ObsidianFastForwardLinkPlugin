@@ -1,14 +1,24 @@
 {
-	"name": "obsidian-synonyms-plugin",
+	"name": "fast-forward-link",
 	"version": "1.0.0",
-	"description": "This plugin allows you to redirect multiple links to a single note.",
+	"description": "Forward multiple links to a single note with ease.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
-	"keywords": ["obsidian", "redirect", "note", "synonym", "symlink", "symbolic link", "references"],
+	"keywords": [
+		"obsidian",
+		"redirect",
+		"fast forward",
+		"link",
+		"note",
+		"synonym",
+		"symlink",
+		"symbolic link",
+		"references"
+	],
 	"author": "Idan Liberman",
 	"license": "MIT",
 	"devDependencies": {
