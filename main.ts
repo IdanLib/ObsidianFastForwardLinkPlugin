@@ -14,7 +14,7 @@ const DEFAULT_SETTINGS: RedirectSettings = {
 export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
 	redirectsFolder: TFolder | null;
-	redirectRef = async () => {
+	redirectRef = async (file: TFile) => {
 		await this.redirect();
 	};
 
@@ -45,6 +45,7 @@ export default class RedirectPlugin extends Plugin {
 
 	private async redirect() {
 		const currentFile = this.app.workspace.getActiveFile();
+
 		if (!currentFile) {
 			return;
 		}
@@ -58,14 +59,14 @@ export default class RedirectPlugin extends Plugin {
 			return;
 		}
 
-		await this.moveRedirectNote(currentFile);
-
 		await this.app.workspace.openLinkText(
 			targetNoteFile.name,
 			targetNoteFile.path,
 			this.settings.openInNewTab,
 			{ active: this.settings.switchToNewTab }
 		);
+
+		await this.moveRedirectNote(currentFile);
 	}
 
 	private async getCurrentFileContent(
@@ -118,36 +119,34 @@ export default class RedirectPlugin extends Plugin {
 
 		if (!this.redirectsFolder) {
 			await this.createRedirectsFolder();
-
-			try {
-				await this.app.vault.copy(
-					redirectingNote,
-					`/_forwards/${redirectingNote.name}`
-				);
-			} catch (error) {
-				console.warn(error);
-			}
-
-			const redirectingNoteInFolder = await this.deleteNote(
-				redirectingNote
-			);
-
-			if (!redirectingNoteInFolder) {
-				return;
-			}
-
-			// Turn off event handler to avoid opening the target note twice
-			this.app.workspace.off("file-open", this.redirectRef);
-
-			await this.app.workspace.openLinkText(
-				redirectingNoteInFolder.name,
-				redirectingNoteInFolder.path
-			);
-
-			this.app.workspace.on("file-open", this.redirectRef);
-
-			return redirectingNoteInFolder;
 		}
+
+		try {
+			await this.app.vault.copy(
+				redirectingNote,
+				`/_forwards/${redirectingNote.name}`
+			);
+		} catch (error) {
+			console.warn(error);
+		}
+
+		const redirectingNoteInFolder = await this.deleteNote(redirectingNote);
+
+		if (!redirectingNoteInFolder) {
+			return;
+		}
+
+		// Turn off event handler to avoid opening the target note twice
+		this.app.workspace.off("file-open", this.redirectRef);
+
+		await this.app.workspace.openLinkText(
+			redirectingNoteInFolder.name,
+			redirectingNoteInFolder.path
+		);
+
+		this.app.workspace.on("file-open", this.redirectRef);
+
+		return redirectingNoteInFolder;
 	}
 
 	private async deleteNote(orgRedirectingNote: TFile): Promise<TFile | void> {
