@@ -2,6 +2,8 @@
 
 Fast-forward from multiple links to a single target note.
 
+![FastForwardLink](fastforwardlink.jpeg)
+
 ## Introduction
 
 FastForwardLink helps you write faster, keep your notes interconnected, and reduce navigation friction in your vault. This plugin allows you to set multiple links to open a single target note, effectively creating synonymous links. Use custom link abbreviations to type faster, establish conceptual connections between terms, navigate between notes quicker, and keep your vault organized.
