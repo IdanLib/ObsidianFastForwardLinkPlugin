@@ -1,14 +1,14 @@
 # FastForwardLink
 
-Fast-forward from one or more notes to a single target note with ease. Create custom link abbreviations (like `ps` > `photoshop`) to type faster, create conceptual connections between terms, navigate between notes quicker, and keep your vault organized.
+Fast-forward from multiple links to a single target note.
 
 ## Introduction
 
-FastForwardLink lets you redirect multiple links to a single note, creating a seamless and organized navigation experience. You can Obsidian links that are effectively synonymous.
+FastForwardLink helps you write faster, keep your notes interconnected, and reduce navigation friction in your vault. This plugin allows you to set multiple links to open a single target note, effectively creating synonymous links. Use custom link abbreviations to type faster, establish conceptual connections between terms, navigate between notes quicker, and keep your vault organized.
 
-For example, including `[[ps]]` in a note would create or navigate to note called `ps`. With FastForwardLink, it would automatically forward you to the to real target note, titled `photoshop` (or anything else you've defined as the target note).
+For example, when discussing photo editing software, `ps` is often shorthand for `photoshop`. Without FastForwardLink, the link `[[ps]]` would navigate to a note titled `ps`. But with FastForwardLink, the `[[ps]]` link forwards you directly to your target note `photoshop` (or any other specified note).
 
-Common cases include:
+Here are some examples of how you might set up FastForwardLink:
 
 -   `ps` > `photoshop`
 -   `js` > `javascript`
@@ -17,59 +17,62 @@ Common cases include:
 -   `e=mc2` > `Einstein's special theory of relativity`
 -   `favorite film` > `bill and ted's bogus journey`
 
-FastForwardLink helps you write faster, keep your notes interconnected, and minimize navigation friction in your vault.
-
-### FastForwardLink Demo
+### FastForwardLink Plugin Demo
 
 Screenshot or GIF showcasing FastForwardLink in action
 
 ## Features
 
--   Fast Forward Links: Redirect from one note to another automatically, ensuring smooth navigation across related topics or abbreviations.
+-   **Multiple Links, One Target**: Set multiple links to redirect to a single target note for quick navigation between related topics or abbreviations. Organize synonyms or alternate spellings for easier access.
 
--   Custom Shorthands and Synonyms: Create shorthand links like js that automatically redirect to your main javascript note. Organize synonyms or alternate spellings for easier access.
+-   **Quick Keyboard Shortcut**: Press `Ctrl + Alt + R` to quickly create a forwarding link. Set target notes on the fly without breaking your writing flow.
 
--   Quick Keyboard Shortcut: Use `Ctrl + Alt + R` to quickly set a target note, letting you add fast-forwards on the go without breaking your flow.
+-   **Organized Vault**: Streamline vault navigation by unifying concepts, perfect for efficient, clutter-free notes.
 
--   Simplify Your Vault: Keep your vault tidy by centralizing related notes and unifying similar concepts. Perfect for those who want organized, efficient navigation.
+-   **Easy Management**: Forwarding notes are automatically moved to a designated folder for easy review, management, or removal.
 
--   Keep forwards organized: Forwarding notes are automatically moved to a designated folder, for easy review, management, and removal.
-
--   Choose your preferred forwarding type. You can:
+-   **Flexible Forwarding Options**:
 
     -   Open the target note in the same tab.
-    -   Open the target note in a new tab and remain on the forwarding tab.
-    -   Open the target note in a new tab and automatically switch to it.
+    -   Open the target note in a new tab while remaining on the original note.
+    -   Open the target note in a new tab and switch to it automatically.
 
--   Remove forwarding notes easily: Delete all redirecting notes with a single click.
+-   **Remove Forwarding Notes in One Click**: Easily delete all redirecting notes with a single click using plugin settings.
 
 ## Installation and Use
 
-_How do I install FastForwardLink?_
+### Installing FastForwardLink
 
-1. Download the FastForwardLink plugin file and place it in your vault's plugins folder at `{VaultFolder}/.obsidian/plugins/{your-plugin-name}/`
-2. Open Obsidian and click **Settings** > **Community Plugins**.
-3. Enable **FastForwardLink**.
+To install FastForwardLink:
 
-_How do I set up a link redirect?_
+1. Download the FastForwardLink plugin file and place it in your vault's plugins folder at `{VaultFolder}/.obsidian/plugins/{your-plugin-name}/`.
+2. In Obsidian, go to **Settings** > **Community Plugins** and enable **FastForwardLink**.
 
-1. Create or open the note you’d like to forward you to a target note. This is the forwaring note. For example, when discussing photo editing, the term `ps` is commonly used as shorthand for `photoshop`.
-2. Specify the target note's title, wrapped in the forwarding syntax: `::>[[target-note]]`.
+The plugin is now ready for use.
 
-_Typing sucks. Is there a keyboard shortcut?_
+### Setting Up a Fast-Forward Link
 
-Yes! Press You can also press `Ctrl + Alt + R` to wrap the selected text in the forwarding syntax.
+To set up a fast-forwarding link:
 
-That's it! Whenever the forwarding note is opened, it will automatically forward you to the target note.
+1. Create or open the note you want to fast-forward to a target note. For example, a note titled `ps`.
+2. In the note, type the target note's title wrapped in the forwarding syntax: `::>[[target-note]]`. For example, to forward from `ps` to `photoshop`, include `::>[[photoshop]]` in the `ps` note.
 
-### Reporting Bugs and Contacting
+Clicking the `ps` link in any note now opens the `photoshop` note.
+
+### Keyboard Shortcut
+
+Yup, typing sucks. Fortunately, there's a keyboard shortcut to make it easier to create a forwarding note.
+
+Press `Ctrl + Alt + R` (PC) or `Cmd + Opt + R` (macOS) to wrap selected text in the fast-forward syntax.
+
+## Bugs and Contact
 
 Found a bug? Well, we can't have those!
 
-Please open an issue in the [plugin's GitHub repository](ADDLINK), or [contact the developer](idanlib@gmail.com) directly.
+Please open an issue in the [plugin's GitHub repository](ADDLINK) or [contact the developer](mailto:idanlib@gmail.com) directly.
 
-## Support this Plugin
+## Supporting this plugin
 
-If you like this plugin, consider tipping me at [BuyMeACoffee.com](https://buymeacoffee.com/idanlib).
+If you enjoy using FastForwardLink, consider supporting its development by [buying me a coffee](https://www.buymeacoffee.com/idanlib) or a cheesy slice!
 
-<a href="https://www.buymeacoffee.com/idanlib" target="_blank"><img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaG9iNnQwYzI4ajB5enBtMjd4czBzcDlveWJsdm1zYWdna21xZDNvMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/7kZE0z52Sd9zSESzDA/giphy.gif" alt="Buy Me A Coffee" height="300" width="300"></a>
+[![Buy Me a Coffee](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaG9iNnQwYzI4ajB5enBtMjd4czBzcDlveWJsdm1zYWdna21xZDNvMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/7kZE0z52Sd9zSESzDA/giphy.gif)](https://www.buymeacoffee.com/idanlib)
