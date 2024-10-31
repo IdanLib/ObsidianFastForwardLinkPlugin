@@ -28,8 +28,6 @@ export default class RedirectPlugin extends Plugin {
 		const currentRedirectsFolder =
 			this.app.vault.getAbstractFileByPath("_forwards");
 
-		console.log("currentRedirectsFolder: ", currentRedirectsFolder);
-
 		try {
 			this.redirectsFolder = await this.app.vault.createFolder(
 				"/_forwards"
@@ -39,7 +37,6 @@ export default class RedirectPlugin extends Plugin {
 		}
 
 		this.redirectsFolder = currentRedirectsFolder as TFolder;
-		console.log("this.redirectsFolder: ", this.redirectsFolder);
 	}
 
 	private async redirect() {
@@ -49,15 +46,11 @@ export default class RedirectPlugin extends Plugin {
 			return;
 		}
 
-		console.log("currentFile", currentFile);
-
 		const currentFileContent = (await this.getCurrentFileContent(
 			currentFile
 		)) as string;
 
 		const targetNoteFile = this.getTargetFile(currentFileContent);
-
-		console.log("targetNoteFile", targetNoteFile);
 
 		if (!targetNoteFile) {
 			return;
@@ -132,66 +125,33 @@ export default class RedirectPlugin extends Plugin {
 			await this.createRedirectsFolder();
 		}
 
-		// if (redirectingNote.path === `_forwards/${redirectingNote.name}`) {
-		// 	new Notice(
-		// 		`${redirectingNote.name} is in the _forwards folder.`,
-		// 		2000
-		// 	);
-		// 	return;
-		// }
-
 		try {
-			await this.app.vault.copy(
+			redirectingNoteInFolder = await this.app.vault.copy(
 				redirectingNote,
 				`/_forwards/${redirectingNote.name}`
 			);
-			// Turn off event handler to avoid opening the target note twice
-			this.app.workspace.off("file-open", this.redirectRef);
 
 			if (this.settings.openInNewTab) {
-				redirectingNoteInFolder = Object.create(redirectingNote);
-				redirectingNoteInFolder.path = `_forwards/${redirectingNote.path}`;
+				// Turn off event handler to avoid opening the target note twice
+				this.app.workspace.off("file-open", this.redirectRef);
 
 				await this.app.workspace.openLinkText(
 					redirectingNoteInFolder.name,
-					redirectingNoteInFolder.path
+					redirectingNoteInFolder.path,
+					this.settings.openInNewTab,
+					{ active: this.settings.switchToNewTab }
 				);
 
 				this.app.workspace.on("file-open", this.redirectRef);
 			}
 
 			await this.deleteNote(redirectingNote);
-
-			// redirectingNoteInFolder = await this.deleteNote(redirectingNote);
 		} catch (error) {
 			console.warn(error);
 		}
-
-		// if (!redirectingNoteInFolder) {
-		// 	return;
-		// }
-
-		// return redirectingNoteInFolder;
 	}
 
 	private async deleteNote(orgRedirectingNote: TFile): Promise<TFile | void> {
-		// let updatedRedirectingNote = orgRedirectingNote;
-
-		// if (
-		// 	orgRedirectingNote.path === `_forwards/${orgRedirectingNote.name}`
-		// ) {
-		// 	new Notice(
-		// 		`${orgRedirectingNote.name} is in the _forwards folder.`,
-		// 		2000
-		// 	);
-		// 	return;
-		// }
-
-		// if (this.settings.openInNewTab) {
-		// 	updatedRedirectingNote = Object.create(orgRedirectingNote);
-		// 	updatedRedirectingNote.path = `_forwards/${orgRedirectingNote.path}`;
-		// }
-
 		try {
 			await this.app.vault.delete(orgRedirectingNote);
 		} catch (error) {
@@ -201,8 +161,6 @@ export default class RedirectPlugin extends Plugin {
 			);
 			console.error(error);
 		}
-
-		// return updatedRedirectingNote;
 	}
 
 	async onload() {
