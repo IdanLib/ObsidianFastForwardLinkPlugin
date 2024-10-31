@@ -66,6 +66,7 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 							"_forwards folder deleted successfully.",
 							2000
 						);
+						this.plugin.redirectsFolder = null;
 					} catch (error) {
 						new Notice(
 							"Could not delete the _forwards folder.",
