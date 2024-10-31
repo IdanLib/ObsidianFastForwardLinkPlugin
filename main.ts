@@ -26,21 +26,24 @@ export default class RedirectPlugin extends Plugin {
 
 	private async createRedirectsFolder() {
 		const currentRedirectsFolder =
-			this.app.vault.getAbstractFileByPath("/_forwards");
+			this.app.vault.getAbstractFileByPath("_forwards");
 
-		if (!currentRedirectsFolder) {
-			try {
-				this.redirectsFolder = await this.app.vault.createFolder(
-					"/_forwards"
-				);
-			} catch (error) {
-				console.warn(error);
-			}
-		} else {
-			new Notice("_forwards folder found.", 2000);
+		console.log("currentRedirectsFolder: ", currentRedirectsFolder);
+
+		// if (!currentRedirectsFolder) {
+		try {
+			this.redirectsFolder = await this.app.vault.createFolder(
+				"/_forwards"
+			);
+		} catch (error) {
+			console.warn(error);
 		}
+		// } else {
+		// 	new Notice("_forwards folder found.", 2000);
+		// }
 
 		this.redirectsFolder = currentRedirectsFolder as TFolder;
+		console.log("this.redirectsFolder: ", this.redirectsFolder);
 	}
 
 	private async redirect() {
@@ -49,11 +52,16 @@ export default class RedirectPlugin extends Plugin {
 		if (!currentFile) {
 			return;
 		}
+
+		console.log("currentFile", currentFile);
+
 		const currentFileContent = (await this.getCurrentFileContent(
 			currentFile
 		)) as string;
 
 		const targetNoteFile = this.getTargetFile(currentFileContent);
+
+		console.log("targetNoteFile", targetNoteFile);
 
 		if (!targetNoteFile) {
 			return;
@@ -113,6 +121,8 @@ export default class RedirectPlugin extends Plugin {
 	private async moveRedirectNote(
 		redirectingNote: TFile | null
 	): Promise<TFile | void> {
+		let redirectingNoteInFolder = null;
+
 		if (!redirectingNote) {
 			return;
 		}
@@ -121,16 +131,25 @@ export default class RedirectPlugin extends Plugin {
 			await this.createRedirectsFolder();
 		}
 
+		if (redirectingNote.path === `_forwards/${redirectingNote.name}`) {
+			new Notice(
+				`${redirectingNote.name} is in the _forwards folder.`,
+				2000
+			);
+			return;
+		}
+
 		try {
 			await this.app.vault.copy(
 				redirectingNote,
 				`/_forwards/${redirectingNote.name}`
 			);
+			redirectingNoteInFolder = await this.deleteNote(redirectingNote);
 		} catch (error) {
+			console.log("no need to move redirecting note");
+
 			console.warn(error);
 		}
-
-		const redirectingNoteInFolder = await this.deleteNote(redirectingNote);
 
 		if (!redirectingNoteInFolder) {
 			return;
@@ -138,6 +157,10 @@ export default class RedirectPlugin extends Plugin {
 
 		// Turn off event handler to avoid opening the target note twice
 		this.app.workspace.off("file-open", this.redirectRef);
+		console.log(
+			"opening redirecting note in folder: ",
+			redirectingNoteInFolder
+		);
 
 		await this.app.workspace.openLinkText(
 			redirectingNoteInFolder.name,
@@ -152,15 +175,15 @@ export default class RedirectPlugin extends Plugin {
 	private async deleteNote(orgRedirectingNote: TFile): Promise<TFile | void> {
 		let updatedRedirectingNote = orgRedirectingNote;
 
-		if (
-			orgRedirectingNote.path === `_forwards/${orgRedirectingNote.name}`
-		) {
-			new Notice(
-				`${orgRedirectingNote.name} is in the _forwards folder.`,
-				2000
-			);
-			return;
-		}
+		// if (
+		// 	orgRedirectingNote.path === `_forwards/${orgRedirectingNote.name}`
+		// ) {
+		// 	new Notice(
+		// 		`${orgRedirectingNote.name} is in the _forwards folder.`,
+		// 		2000
+		// 	);
+		// 	return;
+		// }
 
 		if (this.settings.openInNewTab) {
 			updatedRedirectingNote = Object.create(orgRedirectingNote);
