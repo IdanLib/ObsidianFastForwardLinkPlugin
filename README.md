@@ -19,9 +19,11 @@ Here are some examples of how you might set up FastForwardLink:
 -   `e=mc2` > `Einstein's special theory of relativity`
 -   `favorite film` > `bill and ted's bogus journey`
 
+> Press `Ctrl + Alt + R` to quickly create a forwarding link.
+
 ### FastForwardLink Plugin Demo
 
-Screenshot or GIF showcasing FastForwardLink in action
+![demo](./plugin_demo.gif)
 
 ## Features
 
