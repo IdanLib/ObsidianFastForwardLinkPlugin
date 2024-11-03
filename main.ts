@@ -90,7 +90,6 @@ export default class RedirectPlugin extends Plugin {
 		const targetNoteName = currentFileContent.match(linkTextRegex)?.at(1);
 
 		if (!targetNoteName) {
-			console.info("No redirect syntax found.");
 			return null;
 		}
 		const targetNoteFile = this.app.metadataCache.getFirstLinkpathDest(
@@ -135,23 +134,23 @@ export default class RedirectPlugin extends Plugin {
 				// Turn off event handler to avoid opening the target note twice
 				this.app.workspace.off("file-open", this.redirectRef);
 
-				await this.app.workspace.openLinkText(
-					redirectingNoteInFolder.name,
-					redirectingNoteInFolder.path,
-					this.settings.openInNewTab,
-					{ active: this.settings.switchToNewTab }
-				);
+				await this.app.workspace
+					.getLeaf(this.settings.openInNewTab)
+					.openFile(redirectingNoteInFolder, {
+						active: this.settings.switchToNewTab,
+					});
+				this.app.workspace.getLeaf().detach();
 
 				this.app.workspace.on("file-open", this.redirectRef);
 			}
 
 			await this.deleteNote(redirectingNote);
 		} catch (error) {
-			console.warn(error);
+			console.error(error);
 		}
 	}
 
-	private async deleteNote(orgRedirectingNote: TFile): Promise<TFile | void> {
+	private async deleteNote(orgRedirectingNote: TFile): Promise<void> {
 		try {
 			await this.app.vault.delete(orgRedirectingNote);
 		} catch (error) {
