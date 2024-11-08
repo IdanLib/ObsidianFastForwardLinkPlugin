@@ -75,6 +75,12 @@ Found a bug? Well, we can't have those!
 
 Please open an issue in the [plugin's GitHub repository](ADDLINK) or [contact the developer](mailto:idanlib@gmail.com) directly.
 
+### Known Bugs
+
+-   When "Open the target note in a new tab" is enabled and the fast-forwarding note has not yet been moved to the `_forwards_` folder, some additional tabs are opened. This is likely due to internal timing issues in the Obsidian-OS interaction.
+
+    When the fast-forwarding note is in the `_forwards` folder, plugin behavior is as expected.
+
 ## Supporting this plugin
 
 If you enjoy using FastForwardLink, consider supporting its development by [buying me a coffee](https://www.buymeacoffee.com/idanlib) or a cheesy slice!
