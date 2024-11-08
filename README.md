@@ -2,7 +2,7 @@
 
 Fast-forward from multiple links to a single target note.
 
-![FastForwardLink](fastforwardlink.jpeg)
+ <img src="fastforwardlink.jpeg" alt="Girl in a jacket" width="400">
 
 ## Introduction
 
@@ -47,10 +47,16 @@ Here are some examples of how you might set up FastForwardLink:
 
 ### Installing FastForwardLink
 
-To install FastForwardLink:
+To manually install FastForwardLink:
 
-1. Download the FastForwardLink plugin file and place it in your vault's plugins folder at `{VaultFolder}/.obsidian/plugins/{your-plugin-name}/`.
-2. In Obsidian, go to **Settings** > **Community Plugins** and enable **FastForwardLink**.
+1. [Download the following plugin files](https://github.com/IdanLib/ObsidianFastForwardLinkPlugin):
+
+    - `data.json`
+    - `main.js`
+    - `manifest.json`
+
+2. Copy these file to your vault's plugins folder at `{VaultFolder}/.obsidian/plugins/FastForwardLink`.
+3. In Obsidian, go to **Settings** > **Community Plugins** and enable **FastForwardLink**.
 
 The plugin is now ready for use.
 
@@ -73,7 +79,7 @@ Press `Ctrl + Alt + R` (PC) or `Cmd + Opt + R` (macOS) to wrap selected text in 
 
 Found a bug? Well, we can't have those!
 
-Please open an issue in the [plugin's GitHub repository](ADDLINK) or [contact the developer](mailto:idanlib@gmail.com) directly.
+Please open an issue in the [plugin's GitHub repository](https://github.com/IdanLib/ObsidianFastForwardLinkPlugin) or [contact the developer](mailto:idanlib@gmail.com) directly.
 
 ### Known Bugs
 
@@ -85,4 +91,6 @@ Please open an issue in the [plugin's GitHub repository](ADDLINK) or [contact th
 
 If you enjoy using FastForwardLink, consider supporting its development by [buying me a coffee](https://www.buymeacoffee.com/idanlib) or a cheesy slice!
 
-[![Buy Me a Coffee](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaG9iNnQwYzI4ajB5enBtMjd4czBzcDlveWJsdm1zYWdna21xZDNvMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/7kZE0z52Sd9zSESzDA/giphy.gif)](https://www.buymeacoffee.com/idanlib)
+<div style="text-align: center;">
+<a href="https://www.buymeacoffee.com/idanlib" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+</div>
