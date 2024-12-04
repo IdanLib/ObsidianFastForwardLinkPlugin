@@ -110,8 +110,6 @@ export default class RedirectPlugin extends Plugin {
 	private async moveRedirectNote(
 		redirectingNote: TFile | null
 	): Promise<TFile | void> {
-		console.log("redirectingNote: ", redirectingNote);
-
 		if (!redirectingNote) {
 			return;
 		}
