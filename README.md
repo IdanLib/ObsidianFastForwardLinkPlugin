@@ -29,7 +29,7 @@ Here are some examples of how you might set up FastForwardLink:
 
 -   **Multiple Links, One Target**: Set multiple links to redirect to a single target note for quick navigation between related topics or abbreviations. Organize synonyms or alternate spellings for easier access.
 
--   **Quick Keyboard Shortcut**: Press `Ctrl + Alt + R` to quickly create a forwarding link. Set target notes on the fly without breaking your writing flow.
+-   **Quick-Paste Command**: Set target notes on the fly without breaking your writing flow. In the Obsidian command palette, select **Paste Redirect Syntax onto Selection** to quickly create a forwarding link.
 
 -   **Organized Vault**: Streamline vault navigation by unifying concepts, perfect for efficient, clutter-free notes.
 
@@ -45,7 +45,7 @@ Here are some examples of how you might set up FastForwardLink:
 
 ## Installation and Use
 
-### Installing FastForwardLink
+### Manual Installation
 
 To manually install FastForwardLink:
 
@@ -60,20 +60,25 @@ To manually install FastForwardLink:
 
 The plugin is now ready for use.
 
-### Setting Up a Fast-Forward Link
+### Create a Fast-Forward Link
 
-To set up a fast-forwarding link:
+To create a fast-forwarding link:
 
 1. Create or open the note you want to fast-forward to a target note. For example, a note titled `ps`.
 2. In the note, type the target note's title wrapped in the forwarding syntax: `::>[[target-note]]`. For example, to forward from `ps` to `photoshop`, include `::>[[photoshop]]` in the `ps` note.
 
 Clicking the `ps` link in any note now opens the `photoshop` note.
 
-### Keyboard Shortcut
+### Quick-Paste Syntax
 
-Yup, typing sucks. Fortunately, there's a keyboard shortcut to make it easier to create a forwarding note.
+Yup, typing sucks. Fortunately, there's a command to help you quickly paste the redirect syntax into your code:
 
-Press `Ctrl + Alt + R` (PC) or `Cmd + Opt + R` (macOS) to wrap selected text in the fast-forward syntax.
+1. Press `Ctrl + P` to open the Obsisdian command palette.
+2. Search for and select the command **Paste Redirect Syntax onto Selection**.
+
+The command wraps the selected text in the fast-forward syntax.
+
+> [!TIP] > [Add a hotkey](https://help.obsidian.md/User+interface/Hotkeys#Setting+hotkeys) to trigger this command! We recommend `Ctrl + Alt + R` (PC) or `Cmd + Opt + R` (macOS).
 
 ## Bugs and Contact
 

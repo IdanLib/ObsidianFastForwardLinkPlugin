@@ -13,7 +13,8 @@ const DEFAULT_SETTINGS: RedirectSettings = {
 
 export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
-	redirectsFolder: TFolder | null;
+	redirectsFolder: TFolder | null = null;
+
 	redirectRef = async (file: TFile) => {
 		await this.redirect();
 	};
@@ -25,9 +26,6 @@ export default class RedirectPlugin extends Plugin {
 	}
 
 	private async createRedirectsFolder() {
-		const currentRedirectsFolder =
-			this.app.vault.getAbstractFileByPath("_forwards");
-
 		try {
 			this.redirectsFolder = await this.app.vault.createFolder(
 				"/_forwards"
@@ -35,8 +33,6 @@ export default class RedirectPlugin extends Plugin {
 		} catch (error) {
 			console.warn(error);
 		}
-
-		this.redirectsFolder = currentRedirectsFolder as TFolder;
 	}
 
 	private async redirect() {
@@ -177,7 +173,6 @@ export default class RedirectPlugin extends Plugin {
 		this.addCommand({
 			id: "paste-redirect-syntax",
 			name: "Paste Redirect Syntax onto Selection",
-			hotkeys: [{ key: "r", modifiers: ["Ctrl", "Alt"] }],
 			editorCallback: (editor, view) => {
 				const selection = editor.getSelection();
 				editor.replaceSelection(`::>[[${selection}]]`);
