@@ -145,7 +145,6 @@ export default class RedirectPlugin extends Plugin {
 
 	private async deleteNote(orgRedirectingNote: TFile): Promise<void> {
 		try {
-			// await this.app.vault.delete(orgRedirectingNote);
 			await this.app.fileManager.trashFile(orgRedirectingNote);
 		} catch (error) {
 			new Notice(

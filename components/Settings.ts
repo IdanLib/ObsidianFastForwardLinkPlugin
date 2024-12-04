@@ -61,7 +61,6 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 					}
 
 					try {
-						// this.app.vault.delete(forwardsFolder, true);
 						await this.app.fileManager.trashFile(forwardsFolder);
 						new Notice(
 							"_forwards folder deleted successfully.",
