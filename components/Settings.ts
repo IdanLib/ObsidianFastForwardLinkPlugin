@@ -49,7 +49,7 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 				button.setButtonText("Delete");
 				button.setTooltip("Delete the _forwards folder.");
 				button.setWarning();
-				button.onClick((evt) => {
+				button.onClick(async (evt) => {
 					const forwardsFolder =
 						this.app.vault.getFolderByPath("_forwards");
 					if (!forwardsFolder) {
@@ -61,7 +61,8 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 					}
 
 					try {
-						this.app.vault.delete(forwardsFolder, true);
+						// this.app.vault.delete(forwardsFolder, true);
+						await this.app.fileManager.trashFile(forwardsFolder);
 						new Notice(
 							"_forwards folder deleted successfully.",
 							2000

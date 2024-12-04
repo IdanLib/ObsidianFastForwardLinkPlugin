@@ -110,7 +110,7 @@ export default class RedirectPlugin extends Plugin {
 	private async moveRedirectNote(
 		redirectingNote: TFile | null
 	): Promise<TFile | void> {
-		let redirectingNoteInFolder = null;
+		console.log("redirectingNote: ", redirectingNote);
 
 		if (!redirectingNote) {
 			return;
@@ -121,7 +121,7 @@ export default class RedirectPlugin extends Plugin {
 		}
 
 		try {
-			redirectingNoteInFolder = await this.app.vault.copy(
+			const redirectingNoteInFolder = await this.app.vault.copy(
 				redirectingNote,
 				`/_forwards/${redirectingNote.name}`
 			);
@@ -131,11 +131,10 @@ export default class RedirectPlugin extends Plugin {
 				this.app.workspace.off("file-open", this.redirectRef);
 
 				await this.app.workspace
-					.getLeaf(this.settings.openInNewTab)
+					.getLeaf()
 					.openFile(redirectingNoteInFolder, {
 						active: this.settings.switchToNewTab,
 					});
-				this.app.workspace.getLeaf().detach();
 
 				this.app.workspace.on("file-open", this.redirectRef);
 			}
@@ -148,7 +147,8 @@ export default class RedirectPlugin extends Plugin {
 
 	private async deleteNote(orgRedirectingNote: TFile): Promise<void> {
 		try {
-			await this.app.vault.delete(orgRedirectingNote);
+			// await this.app.vault.delete(orgRedirectingNote);
+			await this.app.fileManager.trashFile(orgRedirectingNote);
 		} catch (error) {
 			new Notice(
 				"Failed to delete directing note from original location. Please delete manually.",
