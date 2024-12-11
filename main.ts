@@ -137,7 +137,9 @@ export default class RedirectPlugin extends Plugin {
 				this.app.workspace.on("file-open", this.redirectRef);
 			}
 
-			await this.deleteNote(redirectingNote);
+			setTimeout(async () => {
+				await this.deleteNote(redirectingNote);
+			}, 500);
 		} catch (error) {
 			console.error(error);
 		}
