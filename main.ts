@@ -137,7 +137,9 @@ export default class RedirectPlugin extends Plugin {
 				this.app.workspace.on("file-open", this.redirectRef);
 			}
 
-			await this.deleteNote(redirectingNote);
+			setTimeout(async () => {
+				await this.deleteNote(redirectingNote);
+			}, 500);
 		} catch (error) {
 			console.error(error);
 		}
@@ -169,7 +171,7 @@ export default class RedirectPlugin extends Plugin {
 
 		this.addCommand({
 			id: "paste-redirect-syntax",
-			name: "Paste Redirect Syntax onto Selection",
+			name: "Paste redirect syntax onto selection",
 			editorCallback: (editor, view) => {
 				const selection = editor.getSelection();
 				editor.replaceSelection(`::>[[${selection}]]`);
