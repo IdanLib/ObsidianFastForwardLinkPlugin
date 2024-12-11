@@ -169,7 +169,7 @@ export default class RedirectPlugin extends Plugin {
 
 		this.addCommand({
 			id: "paste-redirect-syntax",
-			name: "Paste Redirect Syntax onto Selection",
+			name: "Paste redirect syntax onto selection",
 			editorCallback: (editor, view) => {
 				const selection = editor.getSelection();
 				editor.replaceSelection(`::>[[${selection}]]`);

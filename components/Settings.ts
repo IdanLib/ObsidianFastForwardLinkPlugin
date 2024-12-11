@@ -41,7 +41,7 @@ export default class RedirectSettingsTab extends PluginSettingTab {
 				});
 
 		new Setting(containerEl)
-			.setName("Delete the _forwards Folder")
+			.setName("Delete the _forwards folder")
 			.setDesc(
 				"Before uninstalling the plugin, manually delete the `_forwards` folder to remove unnecessary files. This cannot be undone."
 			)
