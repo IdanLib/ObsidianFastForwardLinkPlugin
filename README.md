@@ -19,8 +19,6 @@ Here are some examples of how you might set up FastForwardLink:
 -   `e=mc2` > `Einstein's special theory of relativity`
 -   `favorite film` > `bill and ted's bogus journey`
 
-> Press `Ctrl + Alt + R` to quickly create a forwarding link.
-
 ### FastForwardLink Plugin Demo
 
 ![demo](./plugin_demo.gif)
@@ -29,7 +27,7 @@ Here are some examples of how you might set up FastForwardLink:
 
 -   **Multiple Links, One Target**: Set multiple links to redirect to a single target note for quick navigation between related topics or abbreviations. Organize synonyms or alternate spellings for easier access.
 
--   **Quick-Paste Command**: Set target notes on the fly without breaking your writing flow. In the Obsidian command palette, select **Paste Redirect Syntax onto Selection** to quickly create a forwarding link.
+-   **Quick-Paste Command**: Set target notes on the fly without breaking your writing flow. In the Obsidian command palette, select **Paste redirect syntax onto selection** to quickly create a forwarding link.
 
 -   **Organized Vault**: Streamline vault navigation by unifying concepts, perfect for efficient, clutter-free notes.
 
