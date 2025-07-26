@@ -15,7 +15,7 @@ export default class RedirectPlugin extends Plugin {
 	settings: RedirectSettings;
 	redirectsFolder: TFolder | null = null;
 
-	redirectRef = async (file: TFile) => {
+	handleFileOpen = async (file: TFile) => {
 		await this.redirect();
 	};
 
@@ -60,7 +60,10 @@ export default class RedirectPlugin extends Plugin {
 		);
 
 		if (currentFile.path === `_forwards/${currentFile.name}`) {
-			new Notice(`${currentFile.name} is in the _forwards folder.`, 2000);
+			new Notice(
+				`${currentFile.name} is already in the _forwards folder.`,
+				2000
+			);
 			return;
 		}
 
@@ -82,7 +85,7 @@ export default class RedirectPlugin extends Plugin {
 	}
 
 	private getTargetFile(currentFileContent: string): TFile | null {
-		const linkTextRegex = /::>\[\[(.*[\w\s]*)\]\]/i;
+		const linkTextRegex = /::>\[\[(.*?)\]\]/i;
 		const targetNoteName = currentFileContent.match(linkTextRegex)?.at(1);
 
 		if (!targetNoteName) {
@@ -126,7 +129,7 @@ export default class RedirectPlugin extends Plugin {
 
 			if (this.settings.openInNewTab) {
 				// Turn off event handler to avoid opening the target note twice
-				this.app.workspace.off("file-open", this.redirectRef);
+				this.app.workspace.off("file-open", this.handleFileOpen);
 
 				await this.app.workspace
 					.getLeaf()
@@ -134,7 +137,8 @@ export default class RedirectPlugin extends Plugin {
 						active: this.settings.switchToNewTab,
 					});
 
-				this.app.workspace.on("file-open", this.redirectRef);
+				// Turn event handler on again
+				this.app.workspace.on("file-open", this.handleFileOpen);
 			}
 
 			setTimeout(async () => {
@@ -167,7 +171,7 @@ export default class RedirectPlugin extends Plugin {
 			await this.redirect();
 		});
 
-		this.app.workspace.on("file-open", this.redirectRef);
+		this.app.workspace.on("file-open", this.handleFileOpen);
 
 		this.addCommand({
 			id: "paste-redirect-syntax",
@@ -187,7 +191,7 @@ export default class RedirectPlugin extends Plugin {
 	}
 
 	onunload() {
-		this.app.workspace.off("file-open", this.redirectRef);
+		this.app.workspace.off("file-open", this.handleFileOpen);
 	}
 
 	async loadSettings() {
