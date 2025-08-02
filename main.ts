@@ -50,8 +50,8 @@ export default class RedirectPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "bypass-redirect",
-			name: "Bypass redirect to target note",
+			id: "bypass-forwarding",
+			name: "Bypass forwarding to target note",
 			callback: () => {
 				this.isBypassRedirect = true;
 				new Notice("Bypassing redirects.");
