@@ -23,6 +23,16 @@ Here are some examples of how you might set up FastForwardLink:
 
 ![demo](./plugin_demo.gif)
 
+## Version Updates
+
+### Version 1.1
+
+Some improvements include:
+
+-   You can now temporarily by pass forwarding with a designated command!
+-   Source code refactored and better organized for future conributors.
+-   Better robust event and error handling and messaging.
+
 ## Features
 
 -   **Multiple Links, One Target**: Set multiple links to redirect to a single target note for quick navigation between related topics or abbreviations. Organize synonyms or alternate spellings for easier access.

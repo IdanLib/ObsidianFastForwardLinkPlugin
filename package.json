@@ -1,6 +1,6 @@
 {
 	"name": "fast-forward-link",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "Forward multiple links to a single note with ease.",
 	"main": "main.js",
 	"scripts": {
