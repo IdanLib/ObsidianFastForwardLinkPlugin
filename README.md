@@ -29,7 +29,7 @@ Here are some examples of how you might set up FastForwardLink:
 
 Some improvements include:
 
--   You can now temporarily by pass forwarding with a designated command!
+-   You can now temporarily bypass forwarding with a designated command!
 -   Source code refactored and better organized for future conributors.
 -   Better robust event and error handling and messaging.
 
