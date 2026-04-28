@@ -12,12 +12,12 @@ For example, when discussing photo editing software, `ps` is often shorthand for
 
 Here are some examples of how you might set up FastForwardLink:
 
--   `ps` > `photoshop`
--   `js` > `javascript`
--   `tay tay` > `taylor swift`
--   `46` > `joe biden`
--   `e=mc2` > `Einstein's special theory of relativity`
--   `favorite film` > `bill and ted's bogus journey`
+- `ps` > `photoshop`
+- `js` > `javascript`
+- `tay tay` > `taylor swift`
+- `46` > `joe biden`
+- `e=mc2` > `Einstein's special theory of relativity`
+- `favorite film` > `bill and ted's bogus journey`
 
 ### FastForwardLink Plugin Demo
 
@@ -29,36 +29,34 @@ Here are some examples of how you might set up FastForwardLink:
 
 Some improvements include:
 
--   You can now temporarily bypass forwarding with a designated command!
--   Source code refactored and better organized for future conributors.
--   Better robust event and error handling and messaging.
+- You can now temporarily bypass forwarding with a designated command. In Obsidian's command palette, search for "FastForwardLink".
+- Source code refactored and better organized for future conributors.
+- Better robust event and error handling and messaging.
 
 ## Features
 
--   **Multiple Links, One Target**: Set multiple links to redirect to a single target note for quick navigation between related topics or abbreviations. Organize synonyms or alternate spellings for easier access.
+- **Multiple Links, One Target**: Set multiple links to redirect to a single target note for quick navigation between related topics or abbreviations. Organize synonyms or alternate spellings for easier access.
 
--   **Quick-Paste Command**: Set target notes on the fly without breaking your writing flow. In the Obsidian command palette, select **Paste redirect syntax onto selection** to quickly create a forwarding link.
+- **Quick-Paste Command**: Set target notes on the fly without breaking your writing flow. In the Obsidian command palette, select **Paste redirect syntax onto selection** to quickly create a forwarding link.
 
--   **Organized Vault**: Streamline vault navigation by unifying concepts, perfect for efficient, clutter-free notes.
+- **Organized Vault**: Streamline vault navigation by unifying concepts, perfect for efficient, clutter-free notes.
 
--   **Easy Management**: Forwarding notes are automatically moved to a designated folder for easy review, management, or removal.
+- **Easy Management**: Forwarding notes are automatically moved to a designated folder for easy review, management, or removal.
 
--   **Flexible Forwarding Options**:
+- **Flexible Forwarding Options**:
+    - Open the target note in the same tab.
+    - Open the target note in a new tab while remaining on the original note.
+    - Open the target note in a new tab and switch to it automatically.
 
-    -   Open the target note in the same tab.
-    -   Open the target note in a new tab while remaining on the original note.
-    -   Open the target note in a new tab and switch to it automatically.
+- **Remove Forwarding Notes in One Click**: Easily delete all redirecting notes with a single click using plugin settings.
 
--   **Remove Forwarding Notes in One Click**: Easily delete all redirecting notes with a single click using plugin settings.
+## Installation
 
-## Installation and Use
+Download the plugin directly from Obsidian's community plugins. Just search for FastForwardLink.
 
-### Manual Installation
-
-To manually install FastForwardLink:
+You can also install manually by doing the following:
 
 1. [Download the following plugin files](https://github.com/IdanLib/ObsidianFastForwardLinkPlugin):
-
     - `data.json`
     - `main.js`
     - `manifest.json`
@@ -68,7 +66,7 @@ To manually install FastForwardLink:
 
 The plugin is now ready for use.
 
-### Create a Fast-Forward Link
+## Create a Fast-Forward Link
 
 To create a fast-forwarding link:
 
@@ -77,7 +75,7 @@ To create a fast-forwarding link:
 
 Clicking the `ps` link in any note now opens the `photoshop` note.
 
-### Quick-Paste Syntax
+## Quick-Paste Syntax
 
 Yup, typing sucks. Fortunately, there's a command to help you quickly paste the redirect syntax into your code:
 
@@ -96,7 +94,7 @@ Please open an issue in the [plugin's GitHub repository](https://github.com/Idan
 
 ### Known Bugs
 
--   When "Open the target note in a new tab" is enabled and the fast-forwarding note has not yet been moved to the `_forwards_` folder, some additional tabs are opened. This is likely due to internal timing issues in the Obsidian-OS interaction.
+- When "Open the target note in a new tab" is enabled and the fast-forwarding note has not yet been moved to the `_forwards_` folder, some additional tabs are opened. This is likely due to internal timing issues in the Obsidian-OS interaction.
 
     When the fast-forwarding note is in the `_forwards` folder, plugin behavior is as expected.
 
