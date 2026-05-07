@@ -1,37 +1,65 @@
 # FastForwardLink
 
-Fast-forward from multiple links to a single target note.
+Obsidian lets you link notes. Great.
 
- <img src="fastforwardlink.jpeg" alt="Girl in a jacket" width="400">
+But real people don't always use the same terms consistently:
+- abbreviations
+- acronyms
+- nicknames
+- alternate spellings
+- inside jokes
 
-## Introduction
+So you might write:
+- `javascript`
+- `js`
+- `ecmascript`
 
-FastForwardLink helps you write faster, keep your notes interconnected, and reduce navigation friction in your vault. This plugin allows you to set multiple links to open a single target note, effectively creating synonymous links. Use custom link abbreviations to type faster, establish conceptual connections between terms, navigate between notes quicker, and keep your vault organized.
+...while meaning the exact same thing.
 
-For example, when discussing photo editing software, `ps` is often shorthand for `photoshop`. Without FastForwardLink, the link `[[ps]]` would navigate to a note titled `ps`. But with FastForwardLink, the `[[ps]]` link forwards you directly to your target note `photoshop` (or any other specified note).
+By default, Obsidian treats these as separate notes.
+
+Over time, that creates:
+- duplicate notes
+- fragmented knowledge base
+- inconsistent linking
+- friction while writing naturally
+
+FastForwardLink solves this by turning alias notes into lightweight redirects.
+
+Write naturally. Land on the right note — fast.
+
+<img src="fastforwardlink.jpeg" alt="FastForwardLink mascot" width="400">
+
+## FastForwardLink Plugin Demo
+
+![demo](./plugin_demo.gif)
+
+FastForwardLink lets multiple note names point to the same canonical note. Write naturally without fragmenting your vault structure:
+
+- `js` → `javascript`
+- `ps` → `photoshop`
+
+## How It Works
+
+Suppose you have a note called `javascript`.
+
+Elsewhere in your vault, you naturally write:
+
+```text
+[[js]]
+```
+Normally, Obsidian would create a brand-new js note. But with FastForwardLink:
+- Create a note called `js`
+- Add redirect syntax inside it
+- Opening `js` automatically forwards to `javascript`
 
 Here are some examples of how you might set up FastForwardLink:
 
 - `ps` > `photoshop`
 - `js` > `javascript`
 - `tay tay` > `taylor swift`
-- `46` > `joe biden`
 - `e=mc2` > `Einstein's special theory of relativity`
 - `favorite film` > `bill and ted's bogus journey`
-
-### FastForwardLink Plugin Demo
-
-![demo](./plugin_demo.gif)
-
-## Version Updates
-
-### Version 1.1
-
-Some improvements include:
-
-- You can now temporarily bypass forwarding with a designated command. In Obsidian's command palette, search for "FastForwardLink".
-- Source code refactored and better organized for future conributors.
-- Better robust event and error handling and messaging.
 
 ## Features
 
@@ -61,7 +89,7 @@ You can also install manually by doing the following:
     - `main.js`
     - `manifest.json`
 
-2. Copy these file to your vault's plugins folder at `{VaultFolder}/.obsidian/plugins/FastForwardLink`.
+2. Copy these files to your vault's plugins folder at `{VaultFolder}/.obsidian/plugins/FastForwardLink`.
 3. In Obsidian, go to **Settings** > **Community Plugins** and enable **FastForwardLink**.
 
 The plugin is now ready for use.
@@ -79,12 +107,22 @@ Clicking the `ps` link in any note now opens the `photoshop` note.
 
 Yup, typing sucks. Fortunately, there's a command to help you quickly paste the redirect syntax into your code:
 
-1. Press `Ctrl + P` to open the Obsisdian command palette.
+1. Press `Ctrl + P` to open the Obsidian command palette.
 2. Search for and select the command **Paste Redirect Syntax onto Selection**.
 
 The command wraps the selected text in the fast-forward syntax.
 
 > [!TIP] > [Add a hotkey](https://help.obsidian.md/User+interface/Hotkeys#Setting+hotkeys) to trigger this command! We recommend `Ctrl + Alt + R` (PC) or `Cmd + Opt + R` (macOS).
+
+## Version Updates
+
+### Version 1.1
+
+Some improvements include:
+
+- You can now temporarily bypass forwarding with a designated command. In Obsidian's command palette, search for "FastForwardLink".
+- Source code refactored and better organized for future contributors.
+- Better robust event and error handling and messaging.
 
 ## Bugs and Contact
 
